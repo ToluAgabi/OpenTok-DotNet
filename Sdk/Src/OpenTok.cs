@@ -13,8 +13,7 @@ namespace OpenTokSDK
 {
     public class OpenTok
     {        
-         public int ApiKey { get; set; }
-
+        public int ApiKey { get; set; }
         public string ApiSecret { get; set; }
         private string OpenTokServer { get; set; }
 
@@ -28,6 +27,14 @@ namespace OpenTokSDK
             this.ApiKey = apiKey;
             this.ApiSecret = apiSecret;
             this.OpenTokServer = "https://api.opentok.com";
+            HttpOpenTok.initialize(apiKey, apiSecret, this.OpenTokServer);
+        }
+
+        public OpenTok(int apiKey, string apiSecret, string apiUrl)
+        {
+            this.ApiKey = apiKey;
+            this.ApiSecret = apiSecret;
+            this.OpenTokServer = apiUrl;
             HttpOpenTok.initialize(apiKey, apiSecret, this.OpenTokServer);
         }
 
