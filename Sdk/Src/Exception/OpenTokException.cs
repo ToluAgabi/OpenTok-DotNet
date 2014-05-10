@@ -40,17 +40,17 @@ namespace OpenTokSDK.Exceptions
         }
     }
 
-    public class OpenTokInvalidArgumentException : OpenTokException
+    public class OpenTokArgumentException : OpenTokException
     {
-        public OpenTokInvalidArgumentException(string message)
+        public OpenTokArgumentException(string message)
             : base(message, 400)
         {
         }
     }
 
-    public class OpenTokRequestException : OpenTokException
+    public class OpenTokWebException : OpenTokException
     {
-        public OpenTokRequestException(string message, int code)
+        public OpenTokWebException(string message, int code)
             : base(message, code)
         {
         }
