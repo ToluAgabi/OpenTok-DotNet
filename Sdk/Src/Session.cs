@@ -15,8 +15,8 @@ namespace OpenTokSDK
     public class Session
     {
         public string Id { get; set; }
-        public int ApiKey { get; set; }
-        public string ApiSecret { get; set; }
+        private int ApiKey { get; set; }
+        private string ApiSecret { get; set; }
         public string Location { get; set; }
         public bool P2p { get; set; }
 
