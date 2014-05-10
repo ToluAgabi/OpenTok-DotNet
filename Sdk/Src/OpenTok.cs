@@ -36,6 +36,7 @@ namespace OpenTokSDK
 
         public Session CreateSession(string location = "", bool p2p = false)
         {
+            
             if (!OpenTokUtils.TestIpAddress(location))
             {
                 throw new OpenTokArgumentException(string.Format("Location {0} is not a valid IP address", location));

@@ -64,13 +64,13 @@ namespace OpenTokSDK
             StringBuilder dataStringBuilder = new StringBuilder();
 
             dataStringBuilder.Append(string.Format("session_id={0}", this.Id));
-            dataStringBuilder.Append(string.Format("&create_time={0}", createTime));
+            dataStringBuilder.Append(string.Format("&create_time={0}", (long) createTime));
             dataStringBuilder.Append(string.Format("&nonce={0}", nonce));
             dataStringBuilder.Append(string.Format("&role={0}", role.ToString()));   
 
             if (CheckExpireTime(expireTime, createTime))
             {
-                dataStringBuilder.Append(string.Format("&expire_time={0}", expireTime));
+                dataStringBuilder.Append(string.Format("&expire_time={0}", (long) expireTime));
             }
 
             if (CheckConnectionData(connectionData))

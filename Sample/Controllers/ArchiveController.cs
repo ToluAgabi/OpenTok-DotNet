@@ -14,7 +14,9 @@ namespace Sample.Controllers
     public class ArchiveController : Controller
     {
         private const int archivesPerPage = 5;
-        private OpenTok opentok = new OpenTok(0, "");
+        private OpenTok opentok = new OpenTok(Convert.ToInt32(ConfigurationManager.AppSettings["opentok_key"]),
+                                    ConfigurationManager.AppSettings["opentok_secret"]);
+
 
         // POST Archive/Start
         public string Start()

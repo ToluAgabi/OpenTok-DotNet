@@ -24,7 +24,6 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                @ViewBag.Archives
                                 @foreach(var item in ViewBag.Archives.Items)
                                 {
                                     <tr data-item-id="archive.Id">
@@ -33,7 +32,8 @@
                                             <a href="@item.Url"> @item.Name </a>
                                             }
                                         </td>
-                                        <td>@item.GetCreatedAt().ToString()</td>
+                                        
+                                        <td>@OpenTokSDK.Util.OpenTokUtils.UnixTimeStampToDateTime(item.CreatedAt/1000).ToString() </td>
                                         <td>@item.Duration seconds</td>
                                         <td>@item.Status</td>                                        
                                         <form method="post" action="/Archive/Delete/@item.Id">

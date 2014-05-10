@@ -5,13 +5,14 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.UI;
 using OpenTokSDK;
-
+using System.Configuration;
 
 namespace Sample.Controllers
 {
     public class HomeController : Controller
     {
-        OpenTok opentok = new OpenTok(1, "");
+        private OpenTok opentok = new OpenTok(Convert.ToInt32(ConfigurationManager.AppSettings["opentok_key"]),
+                                    ConfigurationManager.AppSettings["opentok_secret"]);
 
         // GET Home/Index
         public ActionResult Index()
@@ -45,7 +46,7 @@ namespace Sample.Controllers
             if (Application["sessionId"] == null)
             {
                 Application.Lock();
-                Application["sessionId"] = opentok.CreateSession();
+                Application["sessionId"] = opentok.CreateSession().Id;
                 Application.UnLock();
             }
             return (string)Application["sessionId"];
