@@ -18,11 +18,6 @@ namespace OpenTokSDK
         public string ApiSecret { get; set; }
         private string OpenTokServer { get; set; }
 
-        public OpenTok()
-        {
-           
-        }
-
         public OpenTok(int apiKey, string apiSecret)
         {
             this.ApiKey = apiKey;
