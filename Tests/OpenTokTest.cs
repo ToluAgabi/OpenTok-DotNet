@@ -1,5 +1,6 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
+using Moq;
 using OpenTokSDK.Api;
 using OpenTokSDK.Utils;
 using System.Configuration;
@@ -8,221 +9,103 @@ using System.Xml;
 
 namespace OpenTokSDKTest
 {
-    [TestClass]
     public class OpenTokTest
     {
-        [TestMethod]
-        public void SimpleOpenTokConstructorTest()
-        {            
-            int apiKey = Convert.ToInt32(ConfigurationManager.AppSettings["opentok_key"]);
-            OpenTok opentok = new OpenTok();
-            
-            Assert.AreEqual(opentok.ApiKey, apiKey);                 
-        }
+        private OpenTok opentok = new OpenTok(123456,"1234567890abcdef1234567890abcdef1234567890");       
 
-        [TestMethod]
-        public void OpenTokConstructorTest()
+        [Fact]
+        public void CreateSimpleSessionTest()
         {
-            int apiKey = Convert.ToInt32(ConfigurationManager.AppSettings["opentok_key"]);
-            string apiSecret = ConfigurationManager.AppSettings["opentok_secret"];
-            OpenTok opentok = new OpenTok(apiKey, apiSecret);
-            
-            Assert.AreEqual(opentok.ApiKey, apiKey);
-            Assert.AreEqual(opentok.ApiSecret, apiSecret);
+            Session session = opentok.CreateSession();
         }
 
-        [TestMethod]
-        public void CreateSessionTest()
-        {
-            OpenTok opentok = new OpenTok();
-            string sessionId = opentok.CreateSession();
-
-            var result = GetSessionInfo(opentok, sessionId);
-            Assert.IsTrue(Session.ValidateSession(sessionId));
-            Assert.AreEqual(sessionId, result["sessionId"]);
-        }
-
-        [TestMethod]
+        [Fact]
         public void CreateSessionWithLocationTest()
         {
-            OpenTok opentok = new OpenTok();
-            string sessionId = opentok.CreateSession("localhost");
-
-            var result = GetSessionInfo(opentok, sessionId);
-            Assert.IsTrue(Session.ValidateSession(sessionId));
-            Assert.AreEqual(sessionId, result["sessionId"]);
+            Session session = opentok.CreateSession(new SessionProperties.Builder().Location("").build());
         }
 
-        [TestMethod]
-        public void CreateSessionWithP2PPreferenceDisabledTest()
+        [Fact]
+        public void CreateSessionWithP2pDisabledTest()
         {
-            OpenTok opentok = new OpenTok();
-            string sessionId = opentok.CreateSession("localhost", SessionProperties.P2PProperty.disabled);
-
-            var result = GetSessionInfo(opentok, sessionId);
-            Assert.IsTrue(Session.ValidateSession(sessionId));
-            Assert.AreEqual(sessionId, result["sessionId"]);
+            Session session = opentok.CreateSession(new SessionProperties.Builder().P2p(false).build());
         }
 
-        [TestMethod]
-        public void CreateSessionWithP2PPreferenceEnabledTest()
+        [Fact]
+        public void CreateSessionWithP2pDisabledAndLocationTest()
         {
-            OpenTok opentok = new OpenTok();
-            string sessionId = opentok.CreateSession("localhost", SessionProperties.P2PProperty.enabled);
+            Session session = opentok.CreateSession(new SessionProperties.Builder().Location("").P2p(false).build());
 
-            var result = GetSessionInfo(opentok, sessionId);
-            Assert.IsTrue(Session.ValidateSession(sessionId));
-            Assert.AreEqual(sessionId, result["sessionId"]);
-            Assert.AreEqual(SessionProperties.P2PProperty.enabled.ToString(), result["p2pPreference"]);
         }
 
-        [TestMethod]
-        public void CreateTokenTest()
+        [Fact]
+        public void CreateInvalidSessionLocationTest()
         {
-            int apiKey = Convert.ToInt32(ConfigurationManager.AppSettings["opentok_key"]);
-            long currentTime = OpenTokUtils.GetCurrentUnixTimeStamp();
+            Session session = opentok.CreateSession(new SessionProperties.Builder().Location("Invalid IP").build());
 
-            OpenTok opentok = new OpenTok();
-            string sessionId = opentok.CreateSession();
+        }
+ 
+        [Fact]
+        public void GenerateTokenTest()
+        {           
+            String sessionId = "1_MX4xMjM0NTZ-flNhdCBNYXIgMTUgMTQ6NDI6MjMgUERUIDIwMTR-MC40OTAxMzAyNX4";          
             string token = opentok.GenerateToken(sessionId);
-            
-            var response = ValidateToken(token);
-            
-            Assert.AreEqual(response["sessionId"], sessionId);
-            Assert.AreEqual(response["partnerId"], apiKey);
-            Assert.IsTrue(CheckTimeIsInInterval((long)response["createTime"], currentTime, currentTime + 10));            
-            Assert.AreEqual(response["role"], TokenProperties.RoleProperty.publisher.ToString());
         }
 
-        [TestMethod]
-        public void CreateTokenModeratorTest()
+        [Fact]
+        public void GenerateTokenWithExpireTimeTest()
         {
-            int apiKey = Convert.ToInt32(ConfigurationManager.AppSettings["opentok_key"]);
-            long currentTime = OpenTokUtils.GetCurrentUnixTimeStamp();
-
-            OpenTok opentok = new OpenTok();
-            string sessionId = opentok.CreateSession();
-            string token = opentok.GenerateToken(sessionId, TokenProperties.RoleProperty.moderator);
-            
-            var response = ValidateToken(token);
-            
-            Assert.AreEqual(response["sessionId"], sessionId);
-            Assert.AreEqual(response["partnerId"], apiKey);
-            Assert.IsTrue(CheckTimeIsInInterval((long)response["createTime"], currentTime, currentTime + 10));
-            Assert.AreEqual(response["role"], TokenProperties.RoleProperty.moderator.ToString());
+            String sessionId = "1_MX4xMjM0NTZ-flNhdCBNYXIgMTUgMTQ6NDI6MjMgUERUIDIwMTR-MC40OTAxMzAyNX4";                      
+            DateTime date = DateTime.UtcNow.AddHours(1);
+            double oneHour = (date - new DateTime(1970, 1, 1, 0, 0, 0)).TotalSeconds;
+            string token = opentok.GenerateToken(sessionId, new TokenOptions.Builder().ExpireTime(oneHour).build());
         }
 
-        [TestMethod]
-        public void CreateTokenSubscriberTest()
+        [Fact]
+        public void GenerateTokenWithConnectionDataTest()
         {
-            int apiKey = Convert.ToInt32(ConfigurationManager.AppSettings["opentok_key"]);
-            long currentTime = OpenTokUtils.GetCurrentUnixTimeStamp();
-
-            OpenTok opentok = new OpenTok();
-            string sessionId = opentok.CreateSession();
-            string token = opentok.GenerateToken(sessionId, TokenProperties.RoleProperty.subscriber);
-            
-            var response = ValidateToken(token);
-            
-            Assert.AreEqual(response["sessionId"], sessionId);
-            Assert.AreEqual(response["partnerId"], apiKey);
-            Assert.IsTrue(CheckTimeIsInInterval((long)response["createTime"], currentTime, currentTime + 10));
-            Assert.AreEqual(response["role"], TokenProperties.RoleProperty.subscriber.ToString());
+            String sessionId = "1_MX4xMjM0NTZ-flNhdCBNYXIgMTUgMTQ6NDI6MjMgUERUIDIwMTR-MC40OTAxMzAyNX4";                      
+            string token = opentok.GenerateToken(sessionId, new TokenOptions.Builder().Data("Some data for the connection").build());
         }
 
-        [TestMethod]
-        public void CreateTokenWithDateTimeTest()
+        [Fact]
+        public void GenerateTokenWithInvalidSessionTest()
         {
-            int apiKey = Convert.ToInt32(ConfigurationManager.AppSettings["opentok_key"]);
-            DateTime oneHourLater = DateTime.UtcNow.AddHours(1);
-            long currentTime = OpenTokUtils.GetCurrentUnixTimeStamp();
-
-            TokenProperties properties = new TokenProperties(TokenProperties.RoleProperty.subscriber, oneHourLater);
-            OpenTok opentok = new OpenTok();
-            string sessionId = opentok.CreateSession();
-            string token = opentok.GenerateToken(sessionId, properties);
-            
-            var response = ValidateToken(token);
-
-            Assert.AreEqual(response["sessionId"], sessionId);
-            Assert.AreEqual(response["partnerId"], apiKey);
-            Assert.IsTrue(CheckTimeIsInInterval((long)response["createTime"], currentTime, currentTime + 10));          
-            Assert.AreEqual(response["role"], TokenProperties.RoleProperty.subscriber.ToString());
-            Assert.IsTrue(CheckTimeIsInInterval((long)response["expireTime"],
-                            ((long)response["createTime"]) + 3590, ((long)response["createTime"]) + 3610));
+           string token = opentok.GenerateToken(null);
         }
 
-        [TestMethod]
-        public void CreateTokenWithConnectionDataTest()
+        [Fact]
+        public void GetArchiveTest()
         {
-            int apiKey = Convert.ToInt32(ConfigurationManager.AppSettings["opentok_key"]);
-            DateTime oneHourLater = DateTime.UtcNow.AddHours(1);
-            string connectionData = "Some data for the connection";
-            long currentTime = OpenTokUtils.GetCurrentUnixTimeStamp();
-
-            TokenProperties properties = new TokenProperties(TokenProperties.RoleProperty.subscriber, oneHourLater, connectionData);
-            OpenTok opentok = new OpenTok();
-            string sessionId = opentok.CreateSession();
-            string token = opentok.GenerateToken(sessionId, properties);
-            
-            var response = ValidateToken(token);
-
-            Assert.AreEqual(response["sessionId"], sessionId);
-            Assert.AreEqual(response["partnerId"], apiKey);
-            Assert.IsTrue(CheckTimeIsInInterval((long) response["createTime"], currentTime, currentTime + 10));
-            Assert.AreEqual(response["role"], TokenProperties.RoleProperty.subscriber.ToString());
-            Assert.IsTrue(CheckTimeIsInInterval((long) response["expireTime"], 
-                            ((long)response["createTime"]) + 3590, ((long)response["createTime"]) + 3610));
-            Assert.AreEqual(response["connectionData"], connectionData);            
+            String archiveId = "ARCHIVEID";
+            Archive archive = opentok.GetArchive(archiveId);
         }
 
-        private bool CheckTimeIsInInterval(long timeToCheck, long lowerLimit, long upperLimit)
+        [Fact]
+        public void ListArchivesTest()
         {
-            return (timeToCheck >= lowerLimit && timeToCheck <= upperLimit);
+            List<Archive> archives = opentok.ListArchives();
         }
 
-        private static Dictionary<string, object> ValidateToken(string token)
+        [Fact]
+        public void StartArchiveTest()
         {
-            string url = string.Format("token/validate");
-            var headers = new Dictionary<string, string> { { "X-TB-TOKEN-AUTH", token } };
-            string response = HttpOpenTok.Get(url, headers);
-            XmlDocument xmlDoc = HttpOpenTok.ReadXmlResponse(response);
-            var result = new Dictionary<string, object>
-            {
-                {"sessionId", xmlDoc.GetElementsByTagName("session_id")[0].ChildNodes[0].Value},
-                {"partnerId", Convert.ToInt32(xmlDoc.GetElementsByTagName("partner_id")[0].ChildNodes[0].Value)},
-                {"createTime", Convert.ToInt64(xmlDoc.GetElementsByTagName("create_time")[0].ChildNodes[0].Value)},
-                {"role", xmlDoc.GetElementsByTagName("role")[0].ChildNodes[0].Value}
-            };
-            if (xmlDoc.GetElementsByTagName("expire_time").Count > 0)
-            {
-                result.Add("expireTime", Convert.ToInt64(xmlDoc.GetElementsByTagName("expire_time")[0].ChildNodes[0].Value));
-            }
-            if (xmlDoc.GetElementsByTagName("connection_data").Count > 0)
-            {
-                result.Add("connectionData", xmlDoc.GetElementsByTagName("connection_data")[0].ChildNodes[0].Value);
-            }
-            return result;
+            String sessionId = "1_MX4xMjM0NTZ-flNhdCBNYXIgMTUgMTQ6NDI6MjMgUERUIDIwMTR-MC40OTAxMzAyNX4";                                  
+            Archive archive = opentok.StartArchive(sessionId, null);
         }
 
-        private Dictionary<string, object> GetSessionInfo(OpenTok opentok, string sessionId)
+        [Fact]
+        public void StopArchiveTest()
         {
-            string token = opentok.GenerateToken(sessionId);
+            String archiveId = "ARCHIVEID";
+            Archive archive = opentok.StopArchive(archiveId);
+        }
 
-            string url = string.Format("session/{0}?extended=true", sessionId);
-            var headers = new Dictionary<string, string> 
-            { { "X-TB-TOKEN-AUTH", token } };
-            string response = HttpOpenTok.Get(url, headers);
-            XmlDocument xmlDoc = HttpOpenTok.ReadXmlResponse(response);
-            var result = new Dictionary<string, object>
-            {
-                {"sessionId", xmlDoc.GetElementsByTagName("session_id")[0].ChildNodes[0].Value},
-            };
-            if (xmlDoc.GetElementsByTagName("preference").Count > 0)
-            {
-                result.Add("p2pPreference", xmlDoc.GetElementsByTagName("preference")[0].ChildNodes[0].Value);
-            }
-            return result;
+        [Fact]
+        public void DeleteArchiveTest()
+        {
+             String archiveId = "ARCHIVEID";
+            opentok.DeleteArchive(archiveId);
         }
     }
 }
