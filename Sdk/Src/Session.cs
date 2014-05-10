@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Xml;
 using OpenTokSDK.Exceptions;
-using OpenTokSDK.Utils;
+using OpenTokSDK.Util;
 
 namespace OpenTokSDK
 {

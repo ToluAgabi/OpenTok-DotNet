@@ -11,9 +11,9 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Xml;
 
-namespace OpenTokSDK
+namespace OpenTokSDK.Util
 {
-    public class HttpOpenTok
+    public class HttpClient
     {
         private const string DEFAULT_USER_AGENT = "OpenTok-DotNet-SDK/2.0.0";
         private static int apiKey;
@@ -22,9 +22,9 @@ namespace OpenTokSDK
 
         public static void initialize(int apiKey, string apiSecret, string server)
         {
-            HttpOpenTok.apiKey = apiKey;
-            HttpOpenTok.apiSecret = apiSecret;
-            HttpOpenTok.server = server;
+            HttpClient.apiKey = apiKey;
+            HttpClient.apiSecret = apiSecret;
+            HttpClient.server = server;
         }
 
         public static string Get(string url)

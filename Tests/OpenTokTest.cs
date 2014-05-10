@@ -2,7 +2,7 @@
 using Xunit;
 using Moq;
 using OpenTokSDK;
-using OpenTokSDK.Utils;
+using OpenTokSDK.Util;
 using System.Configuration;
 using System.Collections.Generic;
 using System.Xml;
