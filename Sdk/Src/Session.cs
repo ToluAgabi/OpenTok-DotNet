@@ -37,13 +37,13 @@ namespace OpenTokSDK
             this.P2p = p2p;
         }
 
-        public string GenerateToken(TokenProperties properties)
+
+        public string GenerateToken(Role role = Role.PUBLISHER, double expireTime = 0, string data = null)
         {
             long createTime = OpenTokUtils.GetCurrentUnixTimeStamp();
-            long expireTime = properties.GetExpireTimeInUnixTimeStamp();
             int nonce = OpenTokUtils.GetRandomNumber();
 
-            string dataString = BuildDataString(properties, createTime, nonce);
+            string dataString = BuildDataString(role, expireTime, data, createTime, nonce);
             return BuildTokenString(dataString);
         }
 
@@ -59,17 +59,14 @@ namespace OpenTokSDK
             return "T1==" + Convert.ToBase64String(innerBuilderBytes);
         }
 
-        // 
-        private string BuildDataString(TokenProperties properties, long createTime, int nonce)
+        private string BuildDataString(Role role, double expireTime, string connectionData, long createTime, int nonce)
         {   
             StringBuilder dataStringBuilder = new StringBuilder();
-            long expireTime = properties.GetExpireTimeInUnixTimeStamp();
-            string connectionData = properties.ConnectionData;
 
             dataStringBuilder.Append(string.Format("session_id={0}", this.Id));
             dataStringBuilder.Append(string.Format("&create_time={0}", createTime));
             dataStringBuilder.Append(string.Format("&nonce={0}", nonce));
-            dataStringBuilder.Append(string.Format("&role={0}", properties.Role.ToString()));   
+            dataStringBuilder.Append(string.Format("&role={0}", role.ToString()));   
 
             if (CheckExpireTime(expireTime))
             {
@@ -84,7 +81,7 @@ namespace OpenTokSDK
             return dataStringBuilder.ToString();
         }
 
-        private bool CheckExpireTime(long expireTime)
+        private bool CheckExpireTime(double expireTime)
         {
             if (expireTime == 0)
             {
