@@ -51,11 +51,6 @@ namespace OpenTokSDK
         public ArchiveState Status { get; set; }
 
         public String Url { get; set; }
-             
-        public DateTime GetCreatedAt()
-        {
-            return OpenTokUtils.UnixTimeStampToDateTime(((double)CreatedAt / 1000));
-        }
 
         public void Stop()
         {

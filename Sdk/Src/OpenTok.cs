@@ -62,7 +62,7 @@ namespace OpenTokSDK
         {
             if (sessionId == null || sessionId == "")
             {
-                throw new OpenTokInvalidArgumentException("Session not valid");
+                throw new OpenTokArgumentException("Session not valid");
             }
             string url = string.Format("v2/partner/{0}/archive", this.ApiKey);
             var headers = new Dictionary<string, string> { { "Content-type", "application/json" } };
@@ -89,7 +89,7 @@ namespace OpenTokSDK
         {
             if (count < 0)
             {
-                throw new OpenTokInvalidArgumentException("count cannot be smaller than 1");
+                throw new OpenTokArgumentException("count cannot be smaller than 1");
             }
             string url = string.Format("v2/partner/{0}/archive?offset={1}", this.ApiKey, offset);
             if (count > 0)
