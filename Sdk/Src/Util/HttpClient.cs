@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using OpenTokSDK.Constants;
 using OpenTokSDK.Exceptions;
 using System;
 using System.Collections.Generic;
@@ -15,16 +16,17 @@ namespace OpenTokSDK.Util
 {
     public class HttpClient
     {
-        private const string DEFAULT_USER_AGENT = "OpenTok-DotNet-SDK/2.0.0";
+        private static string userAgent;
         private static int apiKey;
         private static string apiSecret;
         private static string server;
 
-        public static void initialize(int apiKey, string apiSecret, string server)
+        public static void Initialize(int apiKey, string apiSecret, string server)
         {
             HttpClient.apiKey = apiKey;
             HttpClient.apiSecret = apiSecret;
             HttpClient.server = server;
+            HttpClient.userAgent = OpenTokVersion.VERSION;
         }
 
         public static string Get(string url)
@@ -107,13 +109,8 @@ namespace OpenTokSDK.Util
             Uri uri = new Uri(string.Format("{0}/{1}", server, url));
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);            
             request.ContentLength = data.Length;
-            request.UserAgent = DEFAULT_USER_AGENT;
-            
-            if (headers.ContainsKey("User-Agent"))
-            {
-                request.UserAgent = headers["User-Agent"];
-                headers.Remove("User-Agent");
-            }
+            request.UserAgent = userAgent;
+                        
             if (headers.ContainsKey("Content-type"))
             {
                 request.ContentType = headers["Content-type"];
@@ -173,10 +170,9 @@ namespace OpenTokSDK.Util
         }
         private static Dictionary<string, string> GetCommonHeaders()
         {
-            return new Dictionary<string, string> {
-                { "X-TB-PARTNER-AUTH", String.Format("{0}:{1}", apiKey, apiSecret) },            
+            return new Dictionary<string, string> 
+            {   { "X-TB-PARTNER-AUTH", String.Format("{0}:{1}", apiKey, apiSecret) },            
                 { "X-TB-VERSION", "1" },
-                { "User-Agent", DEFAULT_USER_AGENT }
             };
         }
     }

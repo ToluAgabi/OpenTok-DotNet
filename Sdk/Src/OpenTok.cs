@@ -28,7 +28,7 @@ namespace OpenTokSDK
             this.ApiKey = apiKey;
             this.ApiSecret = apiSecret;
             this.OpenTokServer = "https://api.opentok.com";
-            HttpClient.initialize(apiKey, apiSecret, this.OpenTokServer);
+            HttpClient.Initialize(apiKey, apiSecret, this.OpenTokServer);
         }
 
         public OpenTok(int apiKey, string apiSecret, string apiUrl)
@@ -36,7 +36,7 @@ namespace OpenTokSDK
             this.ApiKey = apiKey;
             this.ApiSecret = apiSecret;
             this.OpenTokServer = apiUrl;
-            HttpClient.initialize(apiKey, apiSecret, this.OpenTokServer);
+            HttpClient.Initialize(apiKey, apiSecret, this.OpenTokServer);
         }
 
         public Session CreateSession(string location = "", bool p2p = false)
@@ -122,6 +122,5 @@ namespace OpenTokSDK
             var headers = new Dictionary<string, string> { { "Content-type", "application/json" } };
             HttpClient.Delete(url, headers, new Dictionary<string, object>());
         }
-        
     }
 }
