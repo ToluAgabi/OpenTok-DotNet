@@ -13,9 +13,9 @@ using OpenTokSDK.Util;
 namespace OpenTokSDK
 {
     public class OpenTok
-    {        
-        public int ApiKey { get; set; }
-        public string ApiSecret { get; set; }
+    {
+        public int ApiKey { get; internal set; }
+        public string ApiSecret { get; internal set; }
         private string OpenTokServer { get; set; }
 
         public OpenTok(int apiKey, string apiSecret)
