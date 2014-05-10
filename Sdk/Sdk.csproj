@@ -49,7 +49,6 @@
     <Compile Include="Src\HttpOpenTok.cs" />
     <Compile Include="Src\OpenTok.cs" />
     <Compile Include="Src\Session.cs" />
-    <Compile Include="Src\SessionProperties.cs" />
     <Compile Include="Src\TokenProperties.cs" />
     <Compile Include="Src\Util\OpenTokUtils.cs" />
   </ItemGroup>

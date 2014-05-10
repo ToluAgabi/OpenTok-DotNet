@@ -38,31 +38,22 @@ namespace OpenTokSDK
             HttpOpenTok.initialize(apiKey, apiSecret, this.OpenTokServer);
         }
 
-        public string CreateSession()
-        {
-            return CreateSession("");
-        }
-
-        
-        public string CreateSession(string location)
-        {
-            return CreateSession(location, SessionProperties.P2PProperty.disabled);
-        }
-
-        public string CreateSession(string location, SessionProperties.P2PProperty p2ppreference)
-        {
-            return CreateSession(new SessionProperties(location, p2ppreference));
-        }
-
-        
-        public string CreateSession(SessionProperties properties)
+        public Session CreateSession(string location = "", bool p2p = false)
         {
             string url = "session/create";
-            Dictionary<string, string> headers = new Dictionary<string, string>();
-            headers.Add("Content-type", "application/x-www-form-urlencoded");
-            string response = HttpOpenTok.Post(url, headers, properties.GetDictionary());
-            XmlDocument xmlDoc = HttpOpenTok.ReadXmlResponse(response);
-            return xmlDoc.GetElementsByTagName("session_id")[0].ChildNodes[0].Value;
+            string preference = (p2p)? "enabled": "disabled";
+
+            var headers = new Dictionary<string, string>{{"Content-type", "application/x-www-form-urlencoded"}};
+            var data = new Dictionary<string, object>
+            {
+                {"location", location},
+                {"p2p.preference", preference}
+            };
+
+            var response = HttpOpenTok.Post(url, headers, data);
+            var xmlDoc = HttpOpenTok.ReadXmlResponse(response);
+            var sessionId = xmlDoc.GetElementsByTagName("session_id")[0].ChildNodes[0].Value;
+            return new Session(sessionId, ApiKey, ApiSecret, location, p2p);            
         }
 
         public string GenerateToken(string sessionId)

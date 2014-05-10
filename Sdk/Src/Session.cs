@@ -15,16 +15,27 @@ namespace OpenTokSDK
     public class Session
     {
         public string Id { get; set; }
-        public int PartnerId { get; set; }
+        public int ApiKey { get; set; }
         public string ApiSecret { get; set; }
-        
+        public string Location { get; set; }
+        public bool P2p { get; set; }
+
         private const int MAX_CONNECTION_DATA_LENGTH = 1000;
 
-        public Session(string sessionId, int partnerId, string apiSecret)
+        public Session(string sessionId, int apiKey, string apiSecret)
         {
             this.Id = sessionId;
-            this.PartnerId = partnerId;
+            this.ApiKey = apiKey;
             this.ApiSecret = apiSecret;
+        }
+
+        public Session(string sessionId, int apiKey, string apiSecret, string location, bool p2p)
+        {
+            this.Id = sessionId;
+            this.ApiKey = apiKey;
+            this.ApiSecret = apiSecret;
+            this.Location = location;
+            this.P2p = p2p;
         }
 
         public static bool ValidateSession(string sessionId)
@@ -78,7 +89,7 @@ namespace OpenTokSDK
             string signature = OpenTokUtils.EncodeHMAC(dataString, this.ApiSecret);
 
             StringBuilder innerBuilder = new StringBuilder();
-            innerBuilder.Append(string.Format("partner_id={0}", this.PartnerId));
+            innerBuilder.Append(string.Format("partner_id={0}", this.ApiKey));
             innerBuilder.Append(string.Format("&sig={0}:{1}", signature, dataString));            
 
             byte[] innerBuilderBytes = Encoding.UTF8.GetBytes(innerBuilder.ToString());
