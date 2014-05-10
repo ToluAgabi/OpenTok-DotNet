@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using OpenTokSDK.Utils;
 
-namespace OpenTokSDK.Api
+namespace OpenTokSDK
 {
     public class Archive
     {       

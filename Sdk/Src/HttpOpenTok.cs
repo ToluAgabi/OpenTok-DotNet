@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Xml;
 
-namespace OpenTokSDK.Api
+namespace OpenTokSDK
 {
     public class HttpOpenTok
     {

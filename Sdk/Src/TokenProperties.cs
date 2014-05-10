@@ -4,7 +4,7 @@ using System.Linq;
 using OpenTokSDK.Utils;
 using OpenTokSDK.Exceptions;
 
-namespace OpenTokSDK.Api
+namespace OpenTokSDK
 {
     public class TokenProperties
     {

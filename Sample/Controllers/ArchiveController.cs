@@ -14,7 +14,7 @@ namespace Sample.Controllers
     public class ArchiveController : Controller
     {
         private const int archivesPerPage = 5;
-        private OpenTok opentok = new OpenTok(0, "");
+        private OpenTokSDK opentok = new OpenTok(0, "");
 
         // POST Archive/Start
         public string Start()

@@ -9,7 +9,7 @@ using System.Xml;
 using OpenTokSDK.Exceptions;
 using OpenTokSDK.Utils;
 
-namespace OpenTokSDK.Api
+namespace OpenTokSDK
 {
  //GGB review camel casing of methods
     public class Session

@@ -9,7 +9,7 @@ using System.Configuration;
 using OpenTokSDK.Exceptions;
 using Newtonsoft.Json;
 
-namespace OpenTokSDK.Api
+namespace OpenTokSDK
 {
     public class OpenTok
     {        

@@ -11,7 +11,7 @@ namespace Sample.Controllers
 {
     public class HomeController : Controller
     {
-        OpenTok opentok = new OpenTok();
+        OpenTokSDK opentok = new OpenTok();
 
         // GET Home/Index
         public ActionResult Index()

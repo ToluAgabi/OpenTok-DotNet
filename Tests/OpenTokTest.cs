@@ -1,7 +1,7 @@
 ﻿using System;
 using Xunit;
 using Moq;
-using OpenTokSDK.Api;
+using OpenTokSDK;
 using OpenTokSDK.Utils;
 using System.Configuration;
 using System.Collections.Generic;
