@@ -58,7 +58,7 @@ namespace OpenTokSDK
             return session.GenerateToken(role, expireTime, data);
         }
 
-        public Archive StartArchive(string sessionId, string name)
+        public Archive StartArchive(string sessionId, string name = "")
         {
             if (sessionId == null || sessionId == "")
             {
