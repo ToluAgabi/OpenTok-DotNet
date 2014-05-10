@@ -73,11 +73,10 @@ namespace OpenTokSDK
 
         public Archive StopArchive(string archiveId)
         {
-            string url = string.Format("v2/partner/{0}/archive/{1}", this.ApiKey, archiveId);
+            string url = string.Format("v2/partner/{0}/archive/{1}/stop", this.ApiKey, archiveId);
             var headers = new Dictionary<string, string> { { "Content-type", "application/json" } };
-            var data = new Dictionary<string, object> { {"action", "stop"} };
 
-            string response = HttpClient.Post(url, headers, data);
+            string response = HttpClient.Post(url, headers, new Dictionary<string, object>());
             return JsonConvert.DeserializeObject<Archive>(response);
         }
 
