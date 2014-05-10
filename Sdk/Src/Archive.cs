@@ -29,11 +29,6 @@ namespace OpenTokSDK
 
         }
 
-        public Archive(OpenTok opentok)
-        {
-            this.opentok = opentok;
-        }
-
         public long CreatedAt { get; set; }
 
         public long Duration { get; set; }
@@ -50,31 +45,6 @@ namespace OpenTokSDK
 
         public ArchiveState Status { get; set; }
 
-        public String Url { get; set; }
-
-        public void Stop()
-        {
-            Archive archive = opentok.StopArchive(Id.ToString());
-            Status = archive.Status;         
-        }
-
-        public void Delete()
-        {
-            opentok.DeleteArchive(Id.ToString());
-            Status = ArchiveState.deleted;
-        }
-
-        public void Copy(Archive archive)
-        {
-            CreatedAt = archive.CreatedAt;
-            Duration = archive.Duration;
-            Id = archive.Id;
-            Name = archive.Name;
-            PartnerId = archive.PartnerId;
-            SessionId = archive.SessionId;
-            Size = archive.Size;
-            Status = archive.Status;
-            Url = archive.Url;
-        }
+        public String Url { get; set; }       
     }
 }
