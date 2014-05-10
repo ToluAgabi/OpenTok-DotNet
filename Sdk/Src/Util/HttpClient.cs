@@ -70,7 +70,7 @@ namespace OpenTokSDK.Util
             }
             catch(WebException)
             {
-                throw new OpenTokRequestException("Unexpected response from OpenTok", 404);
+                throw new OpenTokWebException("Unexpected response from OpenTok", 404);
             }
 
             if (response.StatusCode == HttpStatusCode.OK)
@@ -84,7 +84,7 @@ namespace OpenTokSDK.Util
             }
             else
             {
-                throw new OpenTokRequestException("Response returned with error status code", 404);
+                throw new OpenTokWebException("Response returned with error status code", 404);
             }
         }
 
@@ -153,7 +153,7 @@ namespace OpenTokSDK.Util
             }
             else if (data != null || headers.ContainsKey("Content-type"))
             {
-                throw new OpenTokInvalidArgumentException("If Content-type is set in the headers data in the body is expected");
+                throw new OpenTokArgumentException("If Content-type is set in the headers data in the body is expected");
             }            
             return "";
         }

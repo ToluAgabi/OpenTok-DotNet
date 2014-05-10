@@ -5,7 +5,7 @@ using System.Net;
 using System.Web;
 using System.Web.UI;
 using System.Web.Mvc;
-using OpenTokSDK.Api;
+using OpenTokSDK;
 using System.IO;
 using System.Configuration;
 
@@ -14,7 +14,7 @@ namespace Sample.Controllers
     public class ArchiveController : Controller
     {
         private const int archivesPerPage = 5;
-        private OpenTokSDK opentok = new OpenTok(0, "");
+        private OpenTok opentok = new OpenTok(0, "");
 
         // POST Archive/Start
         public string Start()

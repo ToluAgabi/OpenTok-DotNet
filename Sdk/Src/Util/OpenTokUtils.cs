@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
+using System.Net;
 
 namespace OpenTokSDK.Util
 {
@@ -55,12 +56,12 @@ namespace OpenTokSDK.Util
             byte[] inputBytes = Encoding.UTF8.GetBytes(input);
             return Convert.ToBase64String(inputBytes);
         }
-        public static long GetUnixTimeStampForDate(DateTime date)
+        public static double GetUnixTimeStampForDate(DateTime date)
         {
-            return (long)(date - new DateTime(1970, 1, 1, 0, 0, 0)).TotalSeconds;
+            return (date - new DateTime(1970, 1, 1, 0, 0, 0)).TotalSeconds;
         } 
 
-        public static long GetCurrentUnixTimeStamp() 
+        public static double GetCurrentUnixTimeStamp() 
         {
             return GetUnixTimeStampForDate(DateTime.UtcNow);
         }   
@@ -76,6 +77,23 @@ namespace OpenTokSDK.Util
         {
             Random random = new Random();
             return random.Next(0, 999999);
+        }
+
+        public static bool TestIpAddress(string location)
+        {
+            IPAddress ipAddress;
+            if (location == "" || location == "localhost")
+            {
+                return true;
+            }
+            else if(IPAddress.TryParse(location, out ipAddress))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

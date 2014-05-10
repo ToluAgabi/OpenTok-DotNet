@@ -43,13 +43,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Src\Constants\OpenTokVersion.cs" />
+    <Compile Include="Src\Role.cs" />
     <Compile Include="Src\Archive.cs" />
     <Compile Include="Src\ArchiveList.cs" />
     <Compile Include="Src\Exception\OpenTokException.cs" />
-    <Compile Include="Src\HttpOpenTok.cs" />
+    <Compile Include="Src\Util\HttpClient.cs" />
     <Compile Include="Src\OpenTok.cs" />
     <Compile Include="Src\Session.cs" />
-    <Compile Include="Src\TokenProperties.cs" />
     <Compile Include="Src\Util\OpenTokUtils.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

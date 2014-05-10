@@ -15,7 +15,7 @@ namespace OpenTokSDK
 
     static class RoleExtensions
     {
-        public override static string ToString(this Role role)
+        public static string ToString(this Role role)
         {
             return role.ToString().ToLower();
         }

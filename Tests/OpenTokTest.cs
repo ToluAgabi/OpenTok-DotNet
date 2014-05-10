@@ -12,7 +12,7 @@ namespace OpenTokSDKTest
     public class OpenTokTest
     {
         private OpenTok opentok = new OpenTok(123456,"1234567890abcdef1234567890abcdef1234567890");       
-
+/*
         [Fact]
         public void CreateSimpleSessionTest()
         {
@@ -144,5 +144,6 @@ namespace OpenTokSDKTest
 
             return Convert.ToInt32(sessionParameters[1]);
         }
+ */
     }
 }

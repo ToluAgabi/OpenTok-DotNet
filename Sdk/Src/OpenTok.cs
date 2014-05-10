@@ -36,6 +36,10 @@ namespace OpenTokSDK
 
         public Session CreateSession(string location = "", bool p2p = false)
         {
+            if (!OpenTokUtils.TestIpAddress(location))
+            {
+                throw new OpenTokArgumentException(string.Format("Location {0} is not a valid IP address", location));
+            }
             string url = "session/create";
             string preference = (p2p)? "enabled": "disabled";
 
@@ -48,12 +52,22 @@ namespace OpenTokSDK
 
             var response = HttpClient.Post(url, headers, data);
             var xmlDoc = HttpClient.ReadXmlResponse(response);
+            
+            if (xmlDoc.GetElementsByTagName("session_id").Count == 0)
+            {
+                throw new OpenTokWebException("Session could not be provided. Are ApiKey and ApiSecret correctly set?", 404);
+            }
             var sessionId = xmlDoc.GetElementsByTagName("session_id")[0].ChildNodes[0].Value;
-            return new Session(sessionId, ApiKey, ApiSecret, location, p2p);            
+            var apiKey = Convert.ToInt32(xmlDoc.GetElementsByTagName("partner_id")[0].ChildNodes[0].Value);
+            return new Session(sessionId, apiKey, ApiSecret, location, p2p);            
         }
 
         public string GenerateToken(string sessionId, Role role = Role.PUBLISHER, double expireTime = 0, string data = null)
         {
+            if (String.IsNullOrEmpty(sessionId))
+            {
+                throw new OpenTokArgumentException("Session id cannot be empty or null");
+            }
             Session session = new Session(sessionId, this.ApiKey, this.ApiSecret);
             return session.GenerateToken(role, expireTime, data);
         }
@@ -104,10 +118,8 @@ namespace OpenTokSDK
         {
             string url = string.Format("v2/partner/{0}/archive/{1}", this.ApiKey, archiveId);
             var headers = new Dictionary<string, string>{ {"Content-type", "application/json"} };
-            string response = HttpClient.Get(url);
-            Archive archive = new Archive(new OpenTok(ApiKey, ApiSecret));
-            archive.Copy(JsonConvert.DeserializeObject<Archive>(response));
-            return archive;          
+            string response = HttpClient.Get(url);           ;
+            return JsonConvert.DeserializeObject<Archive>(response);
         }
 
         public void DeleteArchive(string archiveId)

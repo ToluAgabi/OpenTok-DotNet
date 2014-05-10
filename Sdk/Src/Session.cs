@@ -14,8 +14,8 @@ namespace OpenTokSDK
     public class Session
     {
         public string Id { get; set; }
-        private int ApiKey { get; set; }
-        private string ApiSecret { get; set; }
+        public int ApiKey { get; private set; }
+        public string ApiSecret { get; private set; }
         public string Location { get; set; }
         public bool P2p { get; set; }
 
@@ -40,7 +40,7 @@ namespace OpenTokSDK
 
         public string GenerateToken(Role role = Role.PUBLISHER, double expireTime = 0, string data = null)
         {
-            long createTime = OpenTokUtils.GetCurrentUnixTimeStamp();
+            double createTime = OpenTokUtils.GetCurrentUnixTimeStamp();
             int nonce = OpenTokUtils.GetRandomNumber();
 
             string dataString = BuildDataString(role, expireTime, data, createTime, nonce);
@@ -59,7 +59,7 @@ namespace OpenTokSDK
             return "T1==" + Convert.ToBase64String(innerBuilderBytes);
         }
 
-        private string BuildDataString(Role role, double expireTime, string connectionData, long createTime, int nonce)
+        private string BuildDataString(Role role, double expireTime, string connectionData, double createTime, int nonce)
         {   
             StringBuilder dataStringBuilder = new StringBuilder();
 
@@ -68,7 +68,7 @@ namespace OpenTokSDK
             dataStringBuilder.Append(string.Format("&nonce={0}", nonce));
             dataStringBuilder.Append(string.Format("&role={0}", role.ToString()));   
 
-            if (CheckExpireTime(expireTime))
+            if (CheckExpireTime(expireTime, createTime))
             {
                 dataStringBuilder.Append(string.Format("&expire_time={0}", expireTime));
             }
@@ -81,19 +81,19 @@ namespace OpenTokSDK
             return dataStringBuilder.ToString();
         }
 
-        private bool CheckExpireTime(double expireTime)
+        private bool CheckExpireTime(double expireTime, double createTime)
         {
             if (expireTime == 0)
             {
                 return false;
             }
-            else if (expireTime > 0 && expireTime <=  OpenTokUtils.GetCurrentUnixTimeStamp() + 2592000)
+            else if (expireTime > createTime && expireTime <= OpenTokUtils.GetCurrentUnixTimeStamp() + 2592000)
             {
                 return true;
             }
             else
             {
-                throw new OpenTokInvalidArgumentException("Invalid expiration time for token " + expireTime + ". Expiration time " + 
+                throw new OpenTokArgumentException("Invalid expiration time for token " + expireTime + ". Expiration time " + 
                                                         " has to be positive and less than 30 days");
             }
         }
@@ -110,7 +110,7 @@ namespace OpenTokSDK
             }
             else
             {
-                throw new OpenTokInvalidArgumentException("Invalid connection data, it cannot be longer than 1000 characters");
+                throw new OpenTokArgumentException("Invalid connection data, it cannot be longer than 1000 characters");
             }
         }
     }
