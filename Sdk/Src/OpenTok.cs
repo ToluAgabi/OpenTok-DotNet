@@ -56,29 +56,10 @@ namespace OpenTokSDK
             return new Session(sessionId, ApiKey, ApiSecret, location, p2p);            
         }
 
-        public string GenerateToken(string sessionId)
-        {
-            return GenerateToken(sessionId, new TokenProperties());
-        }
-
-        public string GenerateToken(string sessionId, TokenProperties.RoleProperty role)
-        {
-            TokenProperties properties = new TokenProperties(role);
-            Session session = new Session(sessionId, this.ApiKey, this.ApiSecret);
-            return session.GenerateToken(properties);
-        }
-
-        public string GenerateToken(string sessionId, TokenProperties.RoleProperty role, DateTime expireTime, string connectionData)
-        {
-            TokenProperties properties = new TokenProperties(role, expireTime, connectionData);
-            Session session = new Session(sessionId, this.ApiKey, this.ApiSecret);
-            return session.GenerateToken(properties);
-        }
-
-        public string GenerateToken(string sessionId, TokenProperties properties)
+        public string GenerateToken(string sessionId, Role role = Role.PUBLISHER, double expireTime = 0, string data = null)
         {
             Session session = new Session(sessionId, this.ApiKey, this.ApiSecret);
-            return session.GenerateToken(properties);
+            return session.GenerateToken(role, expireTime, data);
         }
 
         public Archive StartArchive(string sessionId, string name)
