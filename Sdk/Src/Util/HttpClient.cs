@@ -16,43 +16,43 @@ namespace OpenTokSDK.Util
 {
     public class HttpClient
     {
-        private static string userAgent;
-        private static int apiKey;
-        private static string apiSecret;
-        private static string server;
+        private string userAgent;
+        private int apiKey;
+        private string apiSecret;
+        private string server;
 
-        public static void Initialize(int apiKey, string apiSecret, string server)
+        public HttpClient(int apiKey, string apiSecret, string apiUrl = "")
         {
-            HttpClient.apiKey = apiKey;
-            HttpClient.apiSecret = apiSecret;
-            HttpClient.server = server;
-            HttpClient.userAgent = OpenTokVersion.VERSION;
+            this.apiKey = apiKey;
+            this.apiSecret = apiSecret;
+            this.server = apiUrl;
+            this.userAgent = OpenTokVersion.VERSION;
         }
 
-        public static string Get(string url)
+        public string Get(string url)
         {
             return Get(url, new Dictionary<string, string>());
         }
 
-        public static string Get(string url, Dictionary<string, string> headers)
+        public string Get(string url, Dictionary<string, string> headers)
         {
             headers.Add("Method", "GET");         
             return DoRequest(url, headers, null);
         }
 
-        public static string Post(string url, Dictionary<string, string> headers, Dictionary<string, object> data)
+        public string Post(string url, Dictionary<string, string> headers, Dictionary<string, object> data)
         {
             headers.Add("Method", "POST");
             return DoRequest(url, headers, data);
         }
 
-        public static string Delete(string url, Dictionary<string, string> headers, Dictionary<string, object> data)
+        public string Delete(string url, Dictionary<string, string> headers, Dictionary<string, object> data)
         {
             headers.Add("Method", "DELETE");
             return DoRequest(url, headers, data);
         }
       
-        public static string DoRequest(string url, Dictionary<string, string> specificHeaders, 
+        public string DoRequest(string url, Dictionary<string, string> specificHeaders, 
                                         Dictionary<string, object> bodyData)
         {
             string data = GetRequestPostData(bodyData, specificHeaders);
@@ -64,39 +64,35 @@ namespace OpenTokSDK.Util
             {
                 if (data != "")
                 {
-                    sendData(request, data);
+                    SendData(request, data);
                 }
-                response = (HttpWebResponse)request.GetResponse();     
+                response = (HttpWebResponse)request.GetResponse();
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.OK:
+                        StreamReader stream = new StreamReader(response.GetResponseStream());
+                        return stream.ReadToEnd();
+                    case HttpStatusCode.NoContent:
+                        return "";
+                    default:
+                        throw new OpenTokWebException("Response returned with unexpected status code " + response.StatusCode.ToString());
+                }
             }
-            catch(WebException)
+            catch(WebException e)
             {
-                throw new OpenTokWebException("Unexpected response from OpenTok", 404);
+                throw new OpenTokWebException("Error with request submission", e);
             }
-
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                StreamReader stream = new StreamReader(response.GetResponseStream());
-                return stream.ReadToEnd();              
-            }  
-            else if(response.StatusCode == HttpStatusCode.NoContent)
-            {
-                return "";
-            }
-            else
-            {
-                throw new OpenTokWebException("Response returned with error status code", 404);
-            }
+         
         }
 
-        public static XmlDocument ReadXmlResponse(string xml)
+        public XmlDocument ReadXmlResponse(string xml)
         {
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(xml);
             return xmlDoc;
         }
 
-        //ggb camelcase
-        private static void sendData(HttpWebRequest request, object data)
+        private void SendData(HttpWebRequest request, object data)
         {
             using (StreamWriter stream = new StreamWriter(request.GetRequestStream()))
             {
@@ -104,7 +100,7 @@ namespace OpenTokSDK.Util
             }
         }
 
-        private static HttpWebRequest CreateRequest(string url, Dictionary<string, string> headers, string data)
+        private HttpWebRequest CreateRequest(string url, Dictionary<string, string> headers, string data)
         {
             Uri uri = new Uri(string.Format("{0}/{1}", server, url));
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);            
@@ -130,7 +126,7 @@ namespace OpenTokSDK.Util
 
             return request;
         }
-        private static Dictionary<string, string> GetRequestHeaders(Dictionary<string, string> headers)
+        private Dictionary<string, string> GetRequestHeaders(Dictionary<string, string> headers)
         {
             var requestHeaders = GetCommonHeaders();
             requestHeaders = requestHeaders.Concat(headers).GroupBy(d => d.Key)
@@ -138,7 +134,7 @@ namespace OpenTokSDK.Util
             return requestHeaders;
         }
 
-        private static string GetRequestPostData(Dictionary<string, object> data, Dictionary<string, string> headers)
+        private string GetRequestPostData(Dictionary<string, object> data, Dictionary<string, string> headers)
         {
             if (data != null && headers.ContainsKey("Content-type"))
             {
@@ -158,7 +154,7 @@ namespace OpenTokSDK.Util
             return "";
         }
 
-        private static string ProcessParameters(Dictionary<string, object> parameters)
+        private string ProcessParameters(Dictionary<string, object> parameters)
         {
             string data = string.Empty;
 
@@ -168,7 +164,7 @@ namespace OpenTokSDK.Util
             }
             return data.Substring(0, data.Length - 1);            
         }
-        private static Dictionary<string, string> GetCommonHeaders()
+        private Dictionary<string, string> GetCommonHeaders()
         {
             return new Dictionary<string, string> 
             {   { "X-TB-PARTNER-AUTH", String.Format("{0}:{1}", apiKey, apiSecret) },            

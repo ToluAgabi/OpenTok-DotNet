@@ -8,7 +8,7 @@ namespace OpenTokSDK.Exceptions
 {
     public class OpenTokException : Exception
     {
-        private int code;
+        private Exception exception;
         private string message;
 
         public OpenTokException()
@@ -21,11 +21,11 @@ namespace OpenTokSDK.Exceptions
             this.message = message;
         }
 
-        public OpenTokException(string message, int code)
+        public OpenTokException(string message, Exception exception)
             : base(message)
         {
             this.message = message;
-            this.code = code;
+            this.exception = exception;
         }
 
         //GGB override Message property
@@ -34,34 +34,32 @@ namespace OpenTokSDK.Exceptions
             return message;
         }
 
-        public int GetErrorCode()
+        public Exception GetException()
         {
-            return code;
+            return exception;
         }
     }
 
     public class OpenTokArgumentException : OpenTokException
     {
         public OpenTokArgumentException(string message)
-            : base(message, 400)
+            : base(message)
         {
         }
     }
 
     public class OpenTokWebException : OpenTokException
     {
-        public OpenTokWebException(string message, int code)
-            : base(message, code)
+        public OpenTokWebException(string message, Exception exception)
+            : base(message, exception)
+        {
+        }
+
+        public OpenTokWebException(string message)
+            : base(message)
         {
         }
     }
 
-    public class OpenTokSessionNotFoundException : OpenTokException
-    {
-        public OpenTokSessionNotFoundException(string message)
-            : base(message, 404)
-        {
-        }
-    }
-    
+
 }

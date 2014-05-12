@@ -17,13 +17,14 @@ namespace OpenTokSDK
         public int ApiKey { get; private set; }
         public string ApiSecret { get; private set; }
         private string OpenTokServer { get; set; }
+        private HttpClient httpClient { get; set; }
 
         public OpenTok(int apiKey, string apiSecret)
-        {
+        { 
             this.ApiKey = apiKey;
             this.ApiSecret = apiSecret;
             this.OpenTokServer = "https://api.opentok.com";
-            HttpClient.Initialize(apiKey, apiSecret, this.OpenTokServer);
+            httpClient = new HttpClient(apiKey, apiSecret, this.OpenTokServer);
         }
 
         public OpenTok(int apiKey, string apiSecret, string apiUrl)
@@ -31,7 +32,7 @@ namespace OpenTokSDK
             this.ApiKey = apiKey;
             this.ApiSecret = apiSecret;
             this.OpenTokServer = apiUrl;
-            HttpClient.Initialize(apiKey, apiSecret, this.OpenTokServer);
+            httpClient = new HttpClient(apiKey, apiSecret, this.OpenTokServer);
         }
 
         public Session CreateSession(string location = "", bool p2p = false)
@@ -41,7 +42,6 @@ namespace OpenTokSDK
             {
                 throw new OpenTokArgumentException(string.Format("Location {0} is not a valid IP address", location));
             }
-            string url = "session/create";
             string preference = (p2p)? "enabled": "disabled";
 
             var headers = new Dictionary<string, string>{{"Content-type", "application/x-www-form-urlencoded"}};
@@ -51,12 +51,12 @@ namespace OpenTokSDK
                 {"p2p.preference", preference}
             };
 
-            var response = HttpClient.Post(url, headers, data);
-            var xmlDoc = HttpClient.ReadXmlResponse(response);
+            var response = httpClient.Post("session/create", headers, data);
+            var xmlDoc = httpClient.ReadXmlResponse(response);
             
             if (xmlDoc.GetElementsByTagName("session_id").Count == 0)
             {
-                throw new OpenTokWebException("Session could not be provided. Are ApiKey and ApiSecret correctly set?", 404);
+                throw new OpenTokWebException("Session could not be provided. Are ApiKey and ApiSecret correctly set?");
             }
             var sessionId = xmlDoc.GetElementsByTagName("session_id")[0].ChildNodes[0].Value;
             var apiKey = Convert.ToInt32(xmlDoc.GetElementsByTagName("partner_id")[0].ChildNodes[0].Value);
@@ -82,7 +82,7 @@ namespace OpenTokSDK
             string url = string.Format("v2/partner/{0}/archive", this.ApiKey);
             var headers = new Dictionary<string, string> { { "Content-type", "application/json" } };
             var data = new Dictionary<string, object>() { { "sessionId", sessionId }, { "name", name } };
-            string response = HttpClient.Post(url, headers, data);
+            string response = httpClient.Post(url, headers, data);
             return JsonConvert.DeserializeObject<Archive>(response);   
         }
 
@@ -91,7 +91,7 @@ namespace OpenTokSDK
             string url = string.Format("v2/partner/{0}/archive/{1}/stop", this.ApiKey, archiveId);
             var headers = new Dictionary<string, string> { { "Content-type", "application/json" } };
 
-            string response = HttpClient.Post(url, headers, new Dictionary<string, object>());
+            string response = httpClient.Post(url, headers, new Dictionary<string, object>());
             return JsonConvert.DeserializeObject<Archive>(response);
         }
 
@@ -111,7 +111,7 @@ namespace OpenTokSDK
             {
                 url = string.Format("{0}&count={1}", url, count);
             }
-            string response = HttpClient.Get(url);
+            string response = httpClient.Get(url);
             return JsonConvert.DeserializeObject<ArchiveList>(response);
         }
 
@@ -119,7 +119,7 @@ namespace OpenTokSDK
         {
             string url = string.Format("v2/partner/{0}/archive/{1}", this.ApiKey, archiveId);
             var headers = new Dictionary<string, string>{ {"Content-type", "application/json"} };
-            string response = HttpClient.Get(url);           ;
+            string response = httpClient.Get(url);           ;
             return JsonConvert.DeserializeObject<Archive>(response);
         }
 
@@ -127,7 +127,7 @@ namespace OpenTokSDK
         {
             string url = string.Format("v2/partner/{0}/archive/{1}", this.ApiKey, archiveId);
             var headers = new Dictionary<string, string> { { "Content-type", "application/json" } };
-            HttpClient.Delete(url, headers, new Dictionary<string, object>());
+            httpClient.Delete(url, headers, new Dictionary<string, object>());
         }
     }
 }
