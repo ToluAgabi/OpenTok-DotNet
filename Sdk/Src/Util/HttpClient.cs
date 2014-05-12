@@ -21,6 +21,11 @@ namespace OpenTokSDK.Util
         private string apiSecret;
         private string server;
 
+        public HttpClient()
+        {
+            // This is only for testing purposes
+        }
+
         public HttpClient(int apiKey, string apiSecret, string apiUrl = "")
         {
             this.apiKey = apiKey;
@@ -40,7 +45,7 @@ namespace OpenTokSDK.Util
             return DoRequest(url, headers, null);
         }
 
-        public string Post(string url, Dictionary<string, string> headers, Dictionary<string, object> data)
+        public virtual string Post(string url, Dictionary<string, string> headers, Dictionary<string, object> data)
         {
             headers.Add("Method", "POST");
             return DoRequest(url, headers, data);

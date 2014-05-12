@@ -95,5 +95,42 @@ namespace OpenTokSDK.Util
                 return false;
             }
         }
+
+        public static bool ValidateSession(string sessionId)
+        {
+            try
+            {
+                return GetPartnerIdFromSessionId(sessionId) > 0;
+            }
+            catch (FormatException)
+            {
+                return false;
+            }
+        }
+
+        public static int GetPartnerIdFromSessionId(string sessionId)
+        {
+            if (String.IsNullOrEmpty(sessionId))
+            {
+                throw new FormatException("SessionId can not be empty");
+            }
+
+            string formatedSessionId = sessionId.Replace('-', '+');
+            string[] splittedSessionId = OpenTokUtils.SplitString(formatedSessionId, '_', 2);
+            if (splittedSessionId == null)
+            {
+                throw new FormatException("Session id could not be decoded");
+            }
+
+            string decodedSessionId = OpenTokUtils.Decode64(splittedSessionId[1]);
+
+            string[] sessionParameters = OpenTokUtils.SplitString(decodedSessionId, '~', 0);
+            if (sessionParameters == null)
+            {
+                throw new FormatException("Session id could not be decoded");
+            }
+
+            return Convert.ToInt32(sessionParameters[1]);
+        }
     }
 }

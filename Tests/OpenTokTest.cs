@@ -6,74 +6,264 @@ using OpenTokSDK.Util;
 using System.Configuration;
 using System.Collections.Generic;
 using System.Xml;
+using OpenTokSDK.Exceptions;
 
 namespace OpenTokSDKTest
 {
     public class OpenTokTest
     {
-        private OpenTok opentok = new OpenTok(123456,"1234567890abcdef1234567890abcdef1234567890");       
-/*
+        private int apiKey = 123456;
+        private string apiSecret = "1234567890abcdef1234567890abcdef1234567890";
+        
         [Fact]
         public void CreateSimpleSessionTest()
         {
+            string sessionId = "SESSIONID";
+            string returnString = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><sessions><Session><" +
+                                "session_id>" + sessionId + "</session_id><partner_id>123456</partner_id><create_dt>" +
+                                "Mon Mar 17 00:41:31 PDT 2014</create_dt></Session></sessions>";
+            var expectedUrl = "session/create";
+
+            var mockClient = new Mock<HttpClient>();
+            mockClient.Setup(httpClient => httpClient.Post(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<Dictionary<string, object>>())).Returns(returnString);
+            
+            HttpClient client = mockClient.Object;
+
+            OpenTok opentok = new OpenTok(apiKey, apiSecret);
+            opentok.Client = client;
             Session session = opentok.CreateSession();
+
+            Assert.NotNull(session);
+            Assert.Equal(this.apiKey, session.ApiKey);
+            Assert.Equal(sessionId, session.Id);
+            Assert.False(session.P2p);
+            Assert.Equal(session.Location, "");
+
+            mockClient.Verify(httpClient => httpClient.Post(It.Is<string>(url => url.Equals(expectedUrl)), It.IsAny<Dictionary<string, string>>(), It.IsAny<Dictionary<string, object>>()), Times.Once());
+        }
+
+        [Fact]
+        public void CreateP2pSessionTest()
+        {
+            string sessionId = "SESSIONID";
+            string returnString = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><sessions><Session><" +
+                                "session_id>" + sessionId + "</session_id><partner_id>123456</partner_id><create_dt>" +
+                                "Mon Mar 17 00:41:31 PDT 2014</create_dt></Session></sessions>";
+            var expectedUrl = "session/create";
+
+            var mockClient = new Mock<HttpClient>();
+            mockClient.Setup(httpClient => httpClient.Post(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<Dictionary<string, object>>())).Returns(returnString);
+
+            HttpClient client = mockClient.Object;
+
+            OpenTok opentok = new OpenTok(apiKey, apiSecret);
+            opentok.Client = client;
+            Session session = opentok.CreateSession(p2p: true);
+
+            Assert.NotNull(session);
+            Assert.Equal(this.apiKey, session.ApiKey);
+            Assert.Equal(sessionId, session.Id);
+            Assert.True(session.P2p);
+            Assert.Equal(session.Location, "");
+
+            mockClient.Verify(httpClient => httpClient.Post(It.Is<string>(url => url.Equals(expectedUrl)), It.IsAny<Dictionary<string, string>>(), It.IsAny<Dictionary<string, object>>()), Times.Once());
         }
 
         [Fact]
         public void CreateSessionWithLocationTest()
         {
-            Session session = opentok.CreateSession(new SessionProperties.Builder().Location("").build());
+            string sessionId = "SESSIONID";
+            string returnString = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><sessions><Session><" +
+                                "session_id>" + sessionId + "</session_id><partner_id>123456</partner_id><create_dt>" +
+                                "Mon Mar 17 00:41:31 PDT 2014</create_dt></Session></sessions>";
+            var expectedUrl = "session/create";
+
+            var mockClient = new Mock<HttpClient>();
+            mockClient.Setup(httpClient => httpClient.Post(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<Dictionary<string, object>>())).Returns(returnString);
+
+            HttpClient client = mockClient.Object;
+
+            OpenTok opentok = new OpenTok(apiKey, apiSecret);
+            opentok.Client = client;
+            Session session = opentok.CreateSession(location: "0.0.0.0");
+
+            Assert.NotNull(session);
+            Assert.Equal(this.apiKey, session.ApiKey);
+            Assert.Equal(sessionId, session.Id);
+            Assert.False(session.P2p);
+            Assert.Equal(session.Location, "0.0.0.0");
+
+            mockClient.Verify(httpClient => httpClient.Post(It.Is<string>(url => url.Equals(expectedUrl)), It.IsAny<Dictionary<string, string>>(), 
+                            It.IsAny<Dictionary<string, object>>()), Times.Once());
         }
-
+   
         [Fact]
-        public void CreateSessionWithP2pDisabledTest()
+        public void CreateP2pSessionWithLocationTest()
         {
-            Session session = opentok.CreateSession(new SessionProperties.Builder().P2p(false).build());
-        }
+            string sessionId = "SESSIONID";
+            string returnString = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><sessions><Session><" +
+                                "session_id>" + sessionId + "</session_id><partner_id>123456</partner_id><create_dt>" +
+                                "Mon Mar 17 00:41:31 PDT 2014</create_dt></Session></sessions>";
+            var expectedUrl = "session/create";
 
-        [Fact]
-        public void CreateSessionWithP2pDisabledAndLocationTest()
-        {
-            Session session = opentok.CreateSession(new SessionProperties.Builder().Location("").P2p(false).build());
+            var mockClient = new Mock<HttpClient>();
+            mockClient.Setup(httpClient => httpClient.Post(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<Dictionary<string, object>>())).Returns(returnString);
 
+            HttpClient client = mockClient.Object;
+
+            OpenTok opentok = new OpenTok(apiKey, apiSecret);
+            opentok.Client = client;
+            Session session = opentok.CreateSession(location: "0.0.0.0", p2p: true);
+
+            Assert.NotNull(session);
+            Assert.Equal(this.apiKey, session.ApiKey);
+            Assert.Equal(sessionId, session.Id);
+            Assert.True(session.P2p);
+            Assert.Equal(session.Location, "0.0.0.0");
+
+            mockClient.Verify(httpClient => httpClient.Post(It.Is<string>(url => url.Equals(expectedUrl)), It.IsAny<Dictionary<string, string>>(), It.IsAny<Dictionary<string, object>>()), Times.Once());
         }
 
         [Fact]
         public void CreateInvalidSessionLocationTest()
         {
-            Session session = opentok.CreateSession(new SessionProperties.Builder().Location("Invalid IP").build());
+            var mockClient = new Mock<HttpClient>();
+            mockClient.Setup(httpClient => httpClient.Post(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<Dictionary<string, object>>())).Returns("This function should not return anything");
 
+            OpenTok opentok = new OpenTok(apiKey, apiSecret);
+            Session session;
+            try
+            {
+                session = opentok.CreateSession(location: "A location");
+                Assert.True(false);
+            }
+            catch (OpenTokArgumentException)
+            {
+                Assert.True(true);
+            }
         }
- 
+
         [Fact]
         public void GenerateTokenTest()
-        {           
+        {
+            OpenTok opentok = new OpenTok(apiKey, apiSecret);
+            
             String sessionId = "1_MX4xMjM0NTZ-flNhdCBNYXIgMTUgMTQ6NDI6MjMgUERUIDIwMTR-MC40OTAxMzAyNX4";          
             string token = opentok.GenerateToken(sessionId);
+
+            Assert.NotNull(token);
+            var data = CheckToken(token, apiKey);
+
+            Assert.Equal(data["partner_id"], apiKey.ToString());
+            Assert.NotNull(data["sig"]);
+            Assert.NotNull(data["create_time"]);
+            Assert.NotNull(data["nonce"]);
+            Assert.Equal(data["role"], Role.PUBLISHER.ToString());
         }
 
+        [Fact]
+        public void GenerateTokenWithRoleTest()
+        {
+            OpenTok opentok = new OpenTok(apiKey, apiSecret);
+
+            String sessionId = "1_MX4xMjM0NTZ-flNhdCBNYXIgMTUgMTQ6NDI6MjMgUERUIDIwMTR-MC40OTAxMzAyNX4";
+            string token = opentok.GenerateToken(sessionId, role:Role.SUBSCRIBER);
+
+            Assert.NotNull(token);
+            var data = CheckToken(token, apiKey);
+
+            Assert.Equal(data["partner_id"], apiKey.ToString());
+            Assert.NotNull(data["sig"]);
+            Assert.NotNull(data["create_time"]);
+            Assert.NotNull(data["nonce"]);
+            Assert.Equal(data["role"], Role.SUBSCRIBER.ToString());
+        }
+        
+        
         [Fact]
         public void GenerateTokenWithExpireTimeTest()
         {
-            String sessionId = "1_MX4xMjM0NTZ-flNhdCBNYXIgMTUgMTQ6NDI6MjMgUERUIDIwMTR-MC40OTAxMzAyNX4";                      
-            DateTime date = DateTime.UtcNow.AddHours(1);
-            double oneHour = (date - new DateTime(1970, 1, 1, 0, 0, 0)).TotalSeconds;
-            string token = opentok.GenerateToken(sessionId, new TokenOptions.Builder().ExpireTime(oneHour).build());
+            OpenTok opentok = new OpenTok(apiKey, apiSecret);
+            double expireTime = OpenTokUtils.GetCurrentUnixTimeStamp() + 10;
+
+            String sessionId = "1_MX4xMjM0NTZ-flNhdCBNYXIgMTUgMTQ6NDI6MjMgUERUIDIwMTR-MC40OTAxMzAyNX4";
+            string token = opentok.GenerateToken(sessionId, expireTime: expireTime);
+
+            Assert.NotNull(token);
+            var data = CheckToken(token, apiKey);
+
+            Assert.Equal(data["partner_id"], apiKey.ToString());
+            Assert.NotNull(data["sig"]);
+            Assert.NotNull(data["create_time"]);
+            Assert.NotNull(data["nonce"]);
+            Assert.Equal(data["role"], Role.PUBLISHER.ToString());
+            Assert.Equal(data["expire_time"], ((long) expireTime).ToString());
         }
 
         [Fact]
         public void GenerateTokenWithConnectionDataTest()
         {
-            String sessionId = "1_MX4xMjM0NTZ-flNhdCBNYXIgMTUgMTQ6NDI6MjMgUERUIDIwMTR-MC40OTAxMzAyNX4";                      
-            string token = opentok.GenerateToken(sessionId, new TokenOptions.Builder().Data("Some data for the connection").build());
+            OpenTok opentok = new OpenTok(apiKey, apiSecret);
+            double expireTime = OpenTokUtils.GetCurrentUnixTimeStamp() + 10;
+            string connectionData =  "Somedatafortheconnection";
+            String sessionId = "1_MX4xMjM0NTZ-flNhdCBNYXIgMTUgMTQ6NDI6MjMgUERUIDIwMTR-MC40OTAxMzAyNX4";
+            string token = opentok.GenerateToken(sessionId, data:connectionData);
+
+            Assert.NotNull(token);
+            var data = CheckToken(token, apiKey);
+
+            Assert.Equal(data["partner_id"], apiKey.ToString());
+            Assert.NotNull(data["sig"]);
+            Assert.NotNull(data["create_time"]);
+            Assert.NotNull(data["nonce"]);
+            Assert.Equal(data["role"], Role.PUBLISHER.ToString());
+            Assert.Equal(data["connection_data"], connectionData);
         }
 
         [Fact]
-        public void GenerateTokenWithInvalidSessionTest()
+        public void GenerateInvalidTokensTest()
         {
-           string token = opentok.GenerateToken(null);
-        }
+            string token;
+            OpenTok opentok = new OpenTok(apiKey, apiSecret);
+            var exceptions = new List<Exception>();
+            try
+            {
+                // Generate token with empty sessionId
+                token = opentok.GenerateToken(null);
+            }
+            catch(OpenTokArgumentException e)
+            {
+                exceptions.Add(e);
+            }
 
+            try
+            {
+                // Generate token with empty sessionId
+                token = opentok.GenerateToken("");
+            }
+            catch (OpenTokArgumentException e)
+            {
+                exceptions.Add(e);
+            }
+
+            try
+            {
+                // Generate token with empty sessionId
+                token = opentok.GenerateToken("NOT A VALID SESSION ID");
+            }
+            catch (OpenTokArgumentException e)
+            {
+                exceptions.Add(e);
+            }
+
+            Assert.Equal(exceptions.Count, 3);
+            foreach(Exception exception in exceptions)
+            {
+                Assert.True(exception is OpenTokArgumentException);
+            }
+
+        }
+/*
         [Fact]
         public void GetArchiveTest()
         {
@@ -143,7 +333,20 @@ namespace OpenTokSDKTest
             }
 
             return Convert.ToInt32(sessionParameters[1]);
+        }*/
+
+        private Dictionary<string,string> CheckToken(string token, int apiKey)
+        {
+            string baseToken = OpenTokUtils.Decode64(token.Substring(4));
+            char[] sep = { '&' };
+            string[] tokenFields = baseToken.Split(sep);
+            var tokenData = new Dictionary<string, string>();
+
+            for (int i = 0; i < tokenFields.Length; i ++)
+            {
+                tokenData.Add(tokenFields[i].Split('=')[0], tokenFields[i].Split('=')[1]);
+            }
+            return tokenData;
         }
- */
     }
 }
