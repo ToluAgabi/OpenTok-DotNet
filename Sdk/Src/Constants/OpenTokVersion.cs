@@ -8,6 +8,11 @@ namespace OpenTokSDK.Constants
 {
     class OpenTokVersion
     {
-        public const string VERSION = "Opentok-DotNet-SDK/2.2.0-development";
+        private static string Version = "Opentok-DotNet-SDK/" + typeof(OpenTokVersion).Assembly.GetName().Version + "-development";
+    
+        public static string GetVersion()
+        {
+            return Version;
+        }
     }
 }

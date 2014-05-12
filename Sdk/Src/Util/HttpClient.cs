@@ -31,7 +31,7 @@ namespace OpenTokSDK.Util
             this.apiKey = apiKey;
             this.apiSecret = apiSecret;
             this.server = apiUrl;
-            this.userAgent = OpenTokVersion.VERSION;
+            this.userAgent = OpenTokVersion.GetVersion();
         }
 
         public virtual string Get(string url)
