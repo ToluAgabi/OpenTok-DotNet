@@ -9,6 +9,7 @@ using System.Configuration;
 using OpenTokSDK.Exceptions;
 using Newtonsoft.Json;
 using OpenTokSDK.Util;
+using Newtonsoft.Json.Linq;
 
 namespace OpenTokSDK
 {
@@ -81,7 +82,7 @@ namespace OpenTokSDK
 
         public Archive StartArchive(string sessionId, string name = "")
         {
-            if (sessionId == null || sessionId == "")
+            if (String.IsNullOrEmpty(sessionId))
             {
                 throw new OpenTokArgumentException("Session not valid");
             }
@@ -89,7 +90,7 @@ namespace OpenTokSDK
             var headers = new Dictionary<string, string> { { "Content-type", "application/json" } };
             var data = new Dictionary<string, object>() { { "sessionId", sessionId }, { "name", name } };
             string response = Client.Post(url, headers, data);
-            return JsonConvert.DeserializeObject<Archive>(response);   
+            return OpenTokUtils.GenerateArchive(response, ApiKey, ApiSecret, OpenTokServer);
         }
 
         public Archive StopArchive(string archiveId)
@@ -118,7 +119,10 @@ namespace OpenTokSDK
                 url = string.Format("{0}&count={1}", url, count);
             }
             string response = Client.Get(url);
-            return JsonConvert.DeserializeObject<ArchiveList>(response);
+            JObject archives = JObject.Parse(response);
+            JArray archiveArray = (JArray) archives["items"];
+            ArchiveList archiveList = new ArchiveList(archiveArray.ToObject<List<Archive>>(), (int) archives["count"]);
+            return archiveList;
         }
 
         public Archive GetArchive(string archiveId)

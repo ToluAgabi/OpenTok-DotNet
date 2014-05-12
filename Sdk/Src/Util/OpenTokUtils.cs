@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.Net;
+using Newtonsoft.Json;
 
 namespace OpenTokSDK.Util
 {
@@ -106,6 +107,14 @@ namespace OpenTokSDK.Util
             {
                 return false;
             }
+        }
+
+        internal static Archive GenerateArchive(string response, int apiKey, string apiSecret, string apiUrl)
+        {
+            Archive archive = JsonConvert.DeserializeObject<Archive>(response);
+            Archive archiveCopy = new Archive(new OpenTok(apiKey, apiSecret, apiUrl));
+            archiveCopy.CopyArchive(archive);
+            return archiveCopy;
         }
 
         public static int GetPartnerIdFromSessionId(string sessionId)

@@ -34,12 +34,12 @@ namespace OpenTokSDK.Util
             this.userAgent = OpenTokVersion.VERSION;
         }
 
-        public string Get(string url)
+        public virtual string Get(string url)
         {
             return Get(url, new Dictionary<string, string>());
         }
 
-        public string Get(string url, Dictionary<string, string> headers)
+        public virtual string Get(string url, Dictionary<string, string> headers)
         {
             headers.Add("Method", "GET");         
             return DoRequest(url, headers, null);
@@ -51,7 +51,7 @@ namespace OpenTokSDK.Util
             return DoRequest(url, headers, data);
         }
 
-        public string Delete(string url, Dictionary<string, string> headers, Dictionary<string, object> data)
+        public virtual string Delete(string url, Dictionary<string, string> headers, Dictionary<string, object> data)
         {
             headers.Add("Method", "DELETE");
             return DoRequest(url, headers, data);
@@ -67,7 +67,7 @@ namespace OpenTokSDK.Util
 
             try
             {
-                if (data != "")
+                if (!String.IsNullOrEmpty(data))
                 {
                     SendData(request, data);
                 }

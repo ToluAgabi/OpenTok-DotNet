@@ -4,10 +4,13 @@ using System.Linq;
 
 namespace OpenTokSDK
 {
-    public class ArchiveList
+    public class ArchiveList: List<Archive>
     {
-        public int Count { get; set; }
+        public int TotalCount { get; private set; }
 
-        public List<Archive> Items { get; set; }
+        internal ArchiveList(List<Archive> items, int totalCount) : base(items)
+        {
+            TotalCount = totalCount;
+        }
     }
 }

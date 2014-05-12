@@ -263,77 +263,229 @@ namespace OpenTokSDKTest
             }
 
         }
-/*
+
         [Fact]
         public void GetArchiveTest()
         {
-            String archiveId = "ARCHIVEID";
+            string archiveId = "936da01f-9abd-4d9d-80c7-02af85c822a8";
+            string returnString = "{\n" +
+                                    " \"createdAt\" : 1395187836000,\n" +
+                                    " \"duration\" : 62,\n" +
+                                    " \"id\" : \"" + archiveId + "\",\n" +
+                                    " \"name\" : \"\",\n" +
+                                    " \"partnerId\" : 123456,\n" +
+                                    " \"reason\" : \"\",\n" +
+                                    " \"sessionId\" : \"SESSIONID\",\n" +
+                                    " \"size\" : 8347554,\n" +
+                                    " \"status\" : \"available\",\n" +
+                                    " \"url\" : \"http://tokbox.com.archive2.s3.amazonaws.com/123456%2F" +
+                                    archiveId + "%2Farchive.mp4?Expires=1395194362&AWSAccessKeyId=AKIAI6LQCPIXYVWCQV6Q&Si" +
+                                    "gnature=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"\n" + " }";
+            var mockClient = new Mock<HttpClient>();
+            mockClient.Setup(httpClient => httpClient.Get(It.IsAny<string>())).Returns(returnString);
+            
+            OpenTok opentok = new OpenTok(apiKey, apiSecret);
+            opentok.Client = mockClient.Object;
             Archive archive = opentok.GetArchive(archiveId);
+
+            Assert.NotNull(archive);
+            Assert.Equal(this.apiKey, archive.PartnerId);
+            Assert.Equal(archiveId, archive.Id.ToString());
+            Assert.Equal(1395187836000L, archive.CreatedAt);
+            Assert.Equal(62, archive.Duration);
+            Assert.Equal("", archive.Name);
+            Assert.Equal("SESSIONID", archive.SessionId);
+            Assert.Equal(8347554, archive.Size);
+            Assert.Equal(ArchiveState.AVAILABLE, archive.Status);
+            Assert.Equal("http://tokbox.com.archive2.s3.amazonaws.com/123456%2F" + archiveId + "%2Farchive.mp4?Expires=13951" +
+                    "94362&AWSAccessKeyId=AKIAI6LQCPIXYVWCQV6Q&Signature=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", archive.Url);
+
+            mockClient.Verify(httpClient => httpClient.Get(It.Is<string>(url => url.Equals("v2/partner/"+this.apiKey+"/archive/"+archiveId))), Times.Once());
         }
 
+        
         [Fact]
         public void ListArchivesTest()
         {
-            List<Archive> archives = opentok.ListArchives();
+            string returnString = "{\n" +
+                                " \"count\" : 6,\n" +
+                                " \"items\" : [ {\n" +
+                                " \"createdAt\" : 1395187930000,\n" +
+                                " \"duration\" : 22,\n" +
+                                " \"id\" : \"ef546c5a-4fd7-4e59-ab3d-f1cfb4148d1d\",\n" +
+                                " \"name\" : \"\",\n" +
+                                " \"partnerId\" : 123456,\n" +
+                                " \"reason\" : \"\",\n" +
+                                " \"sessionId\" : \"SESSIONID\",\n" +
+                                " \"size\" : 2909274,\n" +
+                                " \"status\" : \"available\",\n" +
+                                " \"url\" : \"http://tokbox.com.archive2.s3.amazonaws.com/123456%2Fef546c5" +
+                                "a-4fd7-4e59-ab3d-f1cfb4148d1d%2Farchive.mp4?Expires=1395188695&AWSAccessKeyId=AKIAI6" +
+                                "LQCPIXYVWCQV6Q&Signature=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"\n" +
+                                " }, {\n" +
+                                " \"createdAt\" : 1395187910000,\n" +
+                                " \"duration\" : 14,\n" +
+                                " \"id\" : \"5350f06f-0166-402e-bc27-09ba54948512\",\n" +
+                                " \"name\" : \"\",\n" +
+                                " \"partnerId\" : 123456,\n" +
+                                " \"reason\" : \"\",\n" +
+                                " \"sessionId\" : \"SESSIONID\",\n" +
+                                " \"size\" : 1952651,\n" +
+                                " \"status\" : \"available\",\n" +
+                                " \"url\" : \"http://tokbox.com.archive2.s3.amazonaws.com/123456%2F5350f06" +
+                                "f-0166-402e-bc27-09ba54948512%2Farchive.mp4?Expires=1395188695&AWSAccessKeyId=AKIAI6" +
+                                "LQCPIXYVWCQV6Q&Signature=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"\n" +
+                                " }, {\n" +
+                                " \"createdAt\" : 1395187836000,\n" +
+                                " \"duration\" : 62,\n" +
+                                " \"id\" : \"f6e7ee58-d6cf-4a59-896b-6d56b158ec71\",\n" +
+                                " \"name\" : \"\",\n" +
+                                " \"partnerId\" : 123456,\n" +
+                                " \"reason\" : \"\",\n" +
+                                " \"sessionId\" : \"SESSIONID\",\n" +
+                                " \"size\" : 8347554,\n" +
+                                " \"status\" : \"available\",\n" +
+                                " \"url\" : \"http://tokbox.com.archive2.s3.amazonaws.com/123456%2Ff6e7ee5" +
+                                "8-d6cf-4a59-896b-6d56b158ec71%2Farchive.mp4?Expires=1395188695&AWSAccessKeyId=AKIAI6" +
+                                "LQCPIXYVWCQV6Q&Signature=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"\n" +
+                                " }, {\n" +
+                                " \"createdAt\" : 1395183243000,\n" +
+                                " \"duration\" : 544,\n" +
+                                " \"id\" : \"30b3ebf1-ba36-4f5b-8def-6f70d9986fe9\",\n" +
+                                " \"name\" : \"\",\n" +
+                                " \"partnerId\" : 123456,\n" +
+                                " \"reason\" : \"\",\n" +
+                                " \"sessionId\" : \"SESSIONID\",\n" +
+                                " \"size\" : 78499758,\n" +
+                                " \"status\" : \"available\",\n" +
+                                " \"url\" : \"http://tokbox.com.archive2.s3.amazonaws.com/123456%2F30b3ebf" +
+                                "1-ba36-4f5b-8def-6f70d9986fe9%2Farchive.mp4?Expires=1395188695&AWSAccessKeyId=AKIAI6" +
+                                "LQCPIXYVWCQV6Q&Signature=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"\n" +
+                                " }, {\n" +
+                                " \"createdAt\" : 1394396753000,\n" +
+                                " \"duration\" : 24,\n" +
+                                " \"id\" : \"b8f64de1-e218-4091-9544-4cbf369fc238\",\n" +
+                                " \"name\" : \"showtime again\",\n" +
+                                " \"partnerId\" : 123456,\n" +
+                                " \"reason\" : \"\",\n" +
+                                " \"sessionId\" : \"SESSIONID\",\n" +
+                                " \"size\" : 2227849,\n" +
+                                " \"status\" : \"available\",\n" +
+                                " \"url\" : \"http://tokbox.com.archive2.s3.amazonaws.com/123456%2Fb8f64de" +
+                                "1-e218-4091-9544-4cbf369fc238%2Farchive.mp4?Expires=1395188695&AWSAccessKeyId=AKIAI6" +
+                                "LQCPIXYVWCQV6Q&Signature=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"\n" +
+                                " }, {\n" +
+                                " \"createdAt\" : 1394321113000,\n" +
+                                " \"duration\" : 1294,\n" +
+                                " \"id\" : \"832641bf-5dbf-41a1-ad94-fea213e59a92\",\n" +
+                                " \"name\" : \"showtime\",\n" +
+                                " \"partnerId\" : 123456,\n" +
+                                " \"reason\" : \"\",\n" +
+                                " \"sessionId\" : \"SESSIONID\",\n" +
+                                " \"size\" : 42165242,\n" +
+                                " \"status\" : \"available\",\n" +
+                                " \"url\" : \"http://tokbox.com.archive2.s3.amazonaws.com/123456%2F832641b" +
+                                "f-5dbf-41a1-ad94-fea213e59a92%2Farchive.mp4?Expires=1395188695&AWSAccessKeyId=AKIAI6" +
+                                "LQCPIXYVWCQV6Q&Signature=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"\n" +
+                                " } ]\n" +
+                                " }";
+            var mockClient = new Mock<HttpClient>();
+            mockClient.Setup(httpClient => httpClient.Get(It.IsAny<string>())).Returns(returnString);
+
+            OpenTok opentok = new OpenTok(apiKey, apiSecret);
+            opentok.Client = mockClient.Object;
+            ArchiveList archives = opentok.ListArchives();
+
+            Assert.NotNull(archives);
+            Assert.Equal(6, archives.Count);
+
+            mockClient.Verify(httpClient => httpClient.Get(It.Is<string>(url => url.Equals("v2/partner/"+apiKey + "/archive?offset=0"))), Times.Once());
         }
 
         [Fact]
         public void StartArchiveTest()
         {
-            String sessionId = "1_MX4xMjM0NTZ-flNhdCBNYXIgMTUgMTQ6NDI6MjMgUERUIDIwMTR-MC40OTAxMzAyNX4";                                  
+            string sessionId = "SESSIONID";
+            string returnString = "{\n" +
+                                " \"createdAt\" : 1395183243556,\n" +
+                                " \"duration\" : 0,\n" +
+                                " \"id\" : \"30b3ebf1-ba36-4f5b-8def-6f70d9986fe9\",\n" +
+                                " \"name\" : \"\",\n" +
+                                " \"partnerId\" : 123456,\n" +
+                                " \"reason\" : \"\",\n" +
+                                " \"sessionId\" : \"SESSIONID\",\n" +
+                                " \"size\" : 0,\n" +
+                                " \"status\" : \"started\",\n" +
+                                " \"url\" : null\n" +
+                                " }";
+            var mockClient = new Mock<HttpClient>();
+            mockClient.Setup(httpClient => httpClient.Post(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<Dictionary<string, object>>())).Returns(returnString);
+            
+            OpenTok opentok = new OpenTok(apiKey, apiSecret);
+            opentok.Client = mockClient.Object;
             Archive archive = opentok.StartArchive(sessionId, null);
+
+            Assert.NotNull(archive);
+            Assert.Equal(sessionId, archive.SessionId);
+            Assert.NotNull(archive.Id);
+
+            mockClient.Verify(httpClient => httpClient.Post(It.Is<string>(url => url.Equals("v2/partner/"+ apiKey +"/archive")), It.IsAny<Dictionary<string, string>>(), It.IsAny<Dictionary<string, object>>()), Times.Once());
         }
 
         [Fact]
         public void StopArchiveTest()
         {
-            String archiveId = "ARCHIVEID";
+            string archiveId = "30b3ebf1-ba36-4f5b-8def-6f70d9986fe9";
+            string returnString = "{\n" +
+                                " \"createdAt\" : 1395183243556,\n" +
+                                " \"duration\" : 0,\n" +
+                                " \"id\" : \"30b3ebf1-ba36-4f5b-8def-6f70d9986fe9\",\n" +
+                                " \"name\" : \"\",\n" +
+                                " \"partnerId\" : 123456,\n" +
+                                " \"reason\" : \"\",\n" +
+                                " \"sessionId\" : \"SESSIONID\",\n" +
+                                " \"size\" : 0,\n" +
+                                " \"status\" : \"started\",\n" +
+                                " \"url\" : null\n" +
+                                " }";
+            var mockClient = new Mock<HttpClient>();
+            mockClient.Setup(httpClient => httpClient.Post(It.IsAny<string>(), 
+                It.IsAny<Dictionary<string, string>>(), 
+                It.IsAny<Dictionary<string, object>>())).Returns(returnString);
+
+            OpenTok opentok = new OpenTok(apiKey, apiSecret);
+            opentok.Client = mockClient.Object;
             Archive archive = opentok.StopArchive(archiveId);
+
+            Assert.NotNull(archive);
+            Assert.Equal("SESSIONID", archive.SessionId);
+            Assert.Equal(archiveId, archive.Id.ToString());
+
+            mockClient.Verify(httpClient => httpClient.Post(It.Is<string>(
+                url => url.Equals("v2/partner/" + apiKey + "/archive/" + archiveId +"/stop")), 
+                It.IsAny<Dictionary<string, string>>(), 
+                It.IsAny<Dictionary<string, object>>()), Times.Once());
         }
 
         [Fact]
         public void DeleteArchiveTest()
         {
-             String archiveId = "ARCHIVEID";
+            string archiveId = "30b3ebf1-ba36-4f5b-8def-6f70d9986fe9";
+            
+            var mockClient = new Mock<HttpClient>();
+            mockClient.Setup(httpClient => httpClient.Delete(It.IsAny<string>(),
+                It.IsAny<Dictionary<string, string>>(),
+                It.IsAny<Dictionary<string, object>>()));
+
+            OpenTok opentok = new OpenTok(apiKey, apiSecret);
+            opentok.Client = mockClient.Object;
             opentok.DeleteArchive(archiveId);
+
+            mockClient.Verify(httpClient => httpClient.Delete(It.Is<string>(
+                url => url.Equals("v2/partner/" + apiKey + "/archive/" + archiveId)),
+                It.IsAny<Dictionary<string, string>>(),
+                It.IsAny<Dictionary<string, object>>()), Times.Once());
         }
-
-        private bool ValidateSession(string sessionId)
-        {
-            try
-            {
-                return GetPartnerIdFromSessionId(sessionId) > 0;
-            }
-            catch (FormatException)
-            {
-                return false;
-            }
-        }
-
-        private int GetPartnerIdFromSessionId(string sessionId)
-        {
-            if (String.IsNullOrEmpty(sessionId))
-            {
-                throw new FormatException("SessionId can not be empty");
-            }
-
-            string formatedSessionId = sessionId.Replace('-', '+');
-            string[] splittedSessionId = OpenTokUtils.SplitString(formatedSessionId, '_', 2);
-            if (splittedSessionId == null)
-            {
-                throw new FormatException("Session id could not be decoded");
-            }
-
-            string decodedSessionId = OpenTokUtils.Decode64(splittedSessionId[1]);
-
-            string[] sessionParameters = OpenTokUtils.SplitString(decodedSessionId, '~', 0);
-            if (sessionParameters == null)
-            {
-                throw new FormatException("Session id could not be decoded");
-            }
-
-            return Convert.ToInt32(sessionParameters[1]);
-        }*/
 
         private Dictionary<string,string> CheckToken(string token, int apiKey)
         {

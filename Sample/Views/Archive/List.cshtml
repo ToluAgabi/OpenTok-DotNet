@@ -24,20 +24,20 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                @foreach(var item in ViewBag.Archives.Items)
+                                @foreach(var item in ViewBag.Archives)
                                 {
                                     <tr data-item-id="archive.Id">
                                         <td>
-                                            @if(item.Status.ToString() == "available" && item.Url != null) {
+                                            @if(item.Status.ToString() == "AVAILABLE" && item.Url != null) {
                                             <a href="@item.Url"> @item.Name </a>
                                             }
                                         </td>
                                         
                                         <td>@OpenTokSDK.Util.OpenTokUtils.UnixTimeStampToDateTime(item.CreatedAt/1000).ToString() </td>
                                         <td>@item.Duration seconds</td>
-                                        <td>@item.Status</td>                                        
+                                        <td>@item.Status.ToString().ToLower()</td>                                        
                                         <form method="post" action="/Archive/Delete/@item.Id">
-                                            @if(item.Status.ToString() == "available") 
+                                            @if (item.Status.ToString() == "AVAILABLE") 
                                             { 
                                                 <td><input class="btn btn-danger btn-xs" type="submit" value="Delete"> </td>
                                             }
