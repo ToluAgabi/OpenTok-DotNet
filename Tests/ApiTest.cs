@@ -9,7 +9,7 @@ namespace Tests
     public class ApiTest
     {
         private int apiKey = 0;
-        private string apiSecret = "*** API SECRET ***";
+        private string apiSecret = "*** YOUR API SECRET ***";
 
         [Fact]
         public void OpenTokTest()
