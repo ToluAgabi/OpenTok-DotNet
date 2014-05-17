@@ -11,30 +11,36 @@ using OpenTokSDK.Util;
 
 namespace OpenTokSDK
 {
+    public enum MediaMode
+    {
+        ROUTED,
+        RELAY
+    }
+
     public class Session
     {
         public string Id { get; set; }
         public int ApiKey { get; private set; }
         public string ApiSecret { get; private set; }
         public string Location { get; set; }
-        public bool P2p { get; set; }
+        public MediaMode Mode { get; set; }
 
         private const int MAX_CONNECTION_DATA_LENGTH = 1000;
 
-        public Session(string sessionId, int apiKey, string apiSecret)
+        internal Session(string sessionId, int apiKey, string apiSecret)
         {
             this.Id = sessionId;
             this.ApiKey = apiKey;
             this.ApiSecret = apiSecret;
         }
 
-        public Session(string sessionId, int apiKey, string apiSecret, string location, bool p2p)
+        internal Session(string sessionId, int apiKey, string apiSecret, string location, MediaMode mediaMode)
         {
             this.Id = sessionId;
             this.ApiKey = apiKey;
             this.ApiSecret = apiSecret;
             this.Location = location;
-            this.P2p = p2p;
+            this.Mode = mediaMode;
         }
 
 

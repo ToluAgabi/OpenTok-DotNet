@@ -36,14 +36,14 @@ namespace OpenTokSDKTest
             Assert.NotNull(session);
             Assert.Equal(this.apiKey, session.ApiKey);
             Assert.Equal(sessionId, session.Id);
-            Assert.False(session.P2p);
+            Assert.Equal(session.Mode, MediaMode.ROUTED);
             Assert.Equal(session.Location, "");
 
             mockClient.Verify(httpClient => httpClient.Post(It.Is<string>(url => url.Equals(expectedUrl)), It.IsAny<Dictionary<string, string>>(), It.IsAny<Dictionary<string, object>>()), Times.Once());
         }
 
         [Fact]
-        public void CreateP2pSessionTest()
+        public void CreateRelayedSessionTest()
         {
             string sessionId = "SESSIONID";
             string returnString = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><sessions><Session><" +
@@ -58,12 +58,12 @@ namespace OpenTokSDKTest
 
             OpenTok opentok = new OpenTok(apiKey, apiSecret);
             opentok.Client = client;
-            Session session = opentok.CreateSession(p2p: true);
+            Session session = opentok.CreateSession(mediaMode: MediaMode.RELAY);
 
             Assert.NotNull(session);
             Assert.Equal(this.apiKey, session.ApiKey);
             Assert.Equal(sessionId, session.Id);
-            Assert.True(session.P2p);
+            Assert.Equal(session.Mode, MediaMode.RELAY);
             Assert.Equal(session.Location, "");
 
             mockClient.Verify(httpClient => httpClient.Post(It.Is<string>(url => url.Equals(expectedUrl)), It.IsAny<Dictionary<string, string>>(), It.IsAny<Dictionary<string, object>>()), Times.Once());
@@ -90,7 +90,7 @@ namespace OpenTokSDKTest
             Assert.NotNull(session);
             Assert.Equal(this.apiKey, session.ApiKey);
             Assert.Equal(sessionId, session.Id);
-            Assert.False(session.P2p);
+            Assert.Equal(session.Mode, MediaMode.ROUTED);
             Assert.Equal(session.Location, "0.0.0.0");
 
             mockClient.Verify(httpClient => httpClient.Post(It.Is<string>(url => url.Equals(expectedUrl)), It.IsAny<Dictionary<string, string>>(), 
@@ -113,12 +113,12 @@ namespace OpenTokSDKTest
 
             OpenTok opentok = new OpenTok(apiKey, apiSecret);
             opentok.Client = client;
-            Session session = opentok.CreateSession(location: "0.0.0.0", p2p: true);
+            Session session = opentok.CreateSession(location: "0.0.0.0", mediaMode: MediaMode.RELAY);
 
             Assert.NotNull(session);
             Assert.Equal(this.apiKey, session.ApiKey);
             Assert.Equal(sessionId, session.Id);
-            Assert.True(session.P2p);
+            Assert.Equal(session.Mode, MediaMode.RELAY);
             Assert.Equal(session.Location, "0.0.0.0");
 
             mockClient.Verify(httpClient => httpClient.Post(It.Is<string>(url => url.Equals(expectedUrl)), It.IsAny<Dictionary<string, string>>(), It.IsAny<Dictionary<string, object>>()), Times.Once());

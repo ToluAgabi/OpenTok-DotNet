@@ -36,14 +36,14 @@ namespace OpenTokSDK
             Client = new HttpClient(apiKey, apiSecret, this.OpenTokServer);
         }
 
-        public Session CreateSession(string location = "", bool p2p = false)
+        public Session CreateSession(string location = "", MediaMode mediaMode = MediaMode.ROUTED)
         {
             
             if (!OpenTokUtils.TestIpAddress(location))
             {
                 throw new OpenTokArgumentException(string.Format("Location {0} is not a valid IP address", location));
             }
-            string preference = (p2p)? "enabled": "disabled";
+            string preference = (mediaMode == MediaMode.RELAY) ? "enabled" : "disabled";
 
             var headers = new Dictionary<string, string>{{"Content-type", "application/x-www-form-urlencoded"}};
             var data = new Dictionary<string, object>
@@ -61,7 +61,7 @@ namespace OpenTokSDK
             }
             var sessionId = xmlDoc.GetElementsByTagName("session_id")[0].ChildNodes[0].Value;
             var apiKey = Convert.ToInt32(xmlDoc.GetElementsByTagName("partner_id")[0].ChildNodes[0].Value);
-            return new Session(sessionId, apiKey, ApiSecret, location, p2p);            
+            return new Session(sessionId, apiKey, ApiSecret, location, mediaMode);            
         }
 
         public string GenerateToken(string sessionId, Role role = Role.PUBLISHER, double expireTime = 0, string data = null)

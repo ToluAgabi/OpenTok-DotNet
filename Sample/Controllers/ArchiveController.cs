@@ -62,7 +62,7 @@ namespace Sample.Controllers
             {
                 ViewBag.ShowPrevious = string.Format("/Archive/List/{0}", page - 1);
             }
-            if (ViewBag.Archives.Count > page*archivesPerPage + archivesPerPage)
+            if (ViewBag.Archives.TotalCount > page*archivesPerPage + archivesPerPage)
             {
                 ViewBag.ShowNext = string.Format("/Archive/List/{0}", page + 1);
             }                        

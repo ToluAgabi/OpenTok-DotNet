@@ -17,7 +17,7 @@ namespace SimpleSample.Controllers
         {
             HttpApplicationState Application = HttpContext.ApplicationInstance.Application;
             ViewBag.sessionId = Application["sessionId"];
-             ViewBag.token = opentok.GenerateToken(ViewBag.sessionId);
+            ViewBag.token = opentok.GenerateToken(ViewBag.sessionId);
             ViewBag.apiKey = opentok.ApiKey;
 
             return View();

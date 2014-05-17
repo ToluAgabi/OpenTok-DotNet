@@ -28,21 +28,21 @@ namespace Tests
             Assert.NotNull(session);
             Assert.Equal(session.ApiKey, apiKey);
             Assert.Equal(session.ApiSecret, apiSecret);
-            Assert.Equal(session.P2p, false);
+            Assert.Equal(session.Mode, MediaMode.ROUTED);
             Assert.Equal(session.Location, "");
             Assert.True(ValidateSession(session.Id));
         }
 
         [Fact]
-        public void CreateP2pSessionTest()
+        public void CreateRelayedSessionTest()
         {
             OpenTok opentok = new OpenTok(apiKey, apiSecret);
-            Session session = opentok.CreateSession(p2p: true);
+            Session session = opentok.CreateSession(mediaMode: MediaMode.RELAY);
 
             Assert.NotNull(session);
             Assert.Equal(session.ApiKey, apiKey);
             Assert.Equal(session.ApiSecret, apiSecret);
-            Assert.Equal(session.P2p, true);
+            Assert.Equal(session.Mode, MediaMode.RELAY);
             Assert.Equal(session.Location, "");
             Assert.True(ValidateSession(session.Id));
         }
@@ -56,7 +56,7 @@ namespace Tests
             Assert.NotNull(session);
             Assert.Equal(session.ApiKey, apiKey);
             Assert.Equal(session.ApiSecret, apiSecret);
-            Assert.Equal(session.P2p, false);
+            Assert.Equal(session.Mode, MediaMode.ROUTED);
             Assert.Equal(session.Location, "0.0.0.0");
             Assert.True(ValidateSession(session.Id));
         }
@@ -81,7 +81,7 @@ namespace Tests
         public void GenerateTokenTest()
         {
             OpenTok opentok = new OpenTok(apiKey, apiSecret);
-            Session session = opentok.CreateSession(p2p: true);
+            Session session = opentok.CreateSession(mediaMode: MediaMode.RELAY);
             string token = session.GenerateToken();
 
             CheckToken(token, apiKey);
@@ -91,7 +91,7 @@ namespace Tests
         public void GenerateSubscriberTokenTest()
         {
             OpenTok opentok = new OpenTok(apiKey, apiSecret);
-            Session session = opentok.CreateSession(p2p: true);
+            Session session = opentok.CreateSession(mediaMode: MediaMode.RELAY);
             string token = session.GenerateToken(role: Role.SUBSCRIBER);
 
             CheckToken(token, apiKey);
@@ -101,7 +101,7 @@ namespace Tests
         public void GenerateTokenWithDataTest()
         {
             OpenTok opentok = new OpenTok(apiKey, apiSecret);
-            Session session = opentok.CreateSession(p2p: true);
+            Session session = opentok.CreateSession(mediaMode: MediaMode.RELAY);
             string token = session.GenerateToken(data: "This is some data");
 
             CheckToken(token, apiKey);
@@ -111,7 +111,7 @@ namespace Tests
         public void GenerateTokenWithExpireTimeTest()
         {
             OpenTok opentok = new OpenTok(apiKey, apiSecret);
-            Session session = opentok.CreateSession(p2p: true);
+            Session session = opentok.CreateSession(mediaMode: MediaMode.RELAY);
             double expireTime = OpenTokUtils.GetCurrentUnixTimeStamp() + 10;
 
             string token = session.GenerateToken(expireTime: expireTime);
