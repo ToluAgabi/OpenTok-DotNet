@@ -36,7 +36,7 @@ namespace OpenTokSDKTest
             Assert.NotNull(session);
             Assert.Equal(this.apiKey, session.ApiKey);
             Assert.Equal(sessionId, session.Id);
-            Assert.Equal(session.Mode, MediaMode.ROUTED);
+            Assert.Equal(session.MediaMode, MediaMode.ROUTED);
             Assert.Equal(session.Location, "");
 
             mockClient.Verify(httpClient => httpClient.Post(It.Is<string>(url => url.Equals(expectedUrl)), It.IsAny<Dictionary<string, string>>(), It.IsAny<Dictionary<string, object>>()), Times.Once());
@@ -63,7 +63,7 @@ namespace OpenTokSDKTest
             Assert.NotNull(session);
             Assert.Equal(this.apiKey, session.ApiKey);
             Assert.Equal(sessionId, session.Id);
-            Assert.Equal(session.Mode, MediaMode.RELAY);
+            Assert.Equal(session.MediaMode, MediaMode.RELAY);
             Assert.Equal(session.Location, "");
 
             mockClient.Verify(httpClient => httpClient.Post(It.Is<string>(url => url.Equals(expectedUrl)), It.IsAny<Dictionary<string, string>>(), It.IsAny<Dictionary<string, object>>()), Times.Once());
@@ -90,7 +90,7 @@ namespace OpenTokSDKTest
             Assert.NotNull(session);
             Assert.Equal(this.apiKey, session.ApiKey);
             Assert.Equal(sessionId, session.Id);
-            Assert.Equal(session.Mode, MediaMode.ROUTED);
+            Assert.Equal(session.MediaMode, MediaMode.ROUTED);
             Assert.Equal(session.Location, "0.0.0.0");
 
             mockClient.Verify(httpClient => httpClient.Post(It.Is<string>(url => url.Equals(expectedUrl)), It.IsAny<Dictionary<string, string>>(), 
@@ -118,7 +118,7 @@ namespace OpenTokSDKTest
             Assert.NotNull(session);
             Assert.Equal(this.apiKey, session.ApiKey);
             Assert.Equal(sessionId, session.Id);
-            Assert.Equal(session.Mode, MediaMode.RELAY);
+            Assert.Equal(session.MediaMode, MediaMode.RELAY);
             Assert.Equal(session.Location, "0.0.0.0");
 
             mockClient.Verify(httpClient => httpClient.Post(It.Is<string>(url => url.Equals(expectedUrl)), It.IsAny<Dictionary<string, string>>(), It.IsAny<Dictionary<string, object>>()), Times.Once());

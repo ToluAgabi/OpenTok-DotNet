@@ -23,7 +23,7 @@ namespace OpenTokSDK
         public int ApiKey { get; private set; }
         public string ApiSecret { get; private set; }
         public string Location { get; set; }
-        public MediaMode Mode { get; set; }
+        public MediaMode MediaMode { get; set; }
 
         private const int MAX_CONNECTION_DATA_LENGTH = 1000;
 
@@ -40,7 +40,7 @@ namespace OpenTokSDK
             this.ApiKey = apiKey;
             this.ApiSecret = apiSecret;
             this.Location = location;
-            this.Mode = mediaMode;
+            this.MediaMode = mediaMode;
         }
 
 

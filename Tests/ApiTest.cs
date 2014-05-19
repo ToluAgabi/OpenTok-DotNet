@@ -28,7 +28,7 @@ namespace Tests
             Assert.NotNull(session);
             Assert.Equal(session.ApiKey, apiKey);
             Assert.Equal(session.ApiSecret, apiSecret);
-            Assert.Equal(session.Mode, MediaMode.ROUTED);
+            Assert.Equal(session.MediaMode, MediaMode.ROUTED);
             Assert.Equal(session.Location, "");
             Assert.True(ValidateSession(session.Id));
         }
@@ -42,7 +42,7 @@ namespace Tests
             Assert.NotNull(session);
             Assert.Equal(session.ApiKey, apiKey);
             Assert.Equal(session.ApiSecret, apiSecret);
-            Assert.Equal(session.Mode, MediaMode.RELAY);
+            Assert.Equal(session.MediaMode, MediaMode.RELAY);
             Assert.Equal(session.Location, "");
             Assert.True(ValidateSession(session.Id));
         }
@@ -56,7 +56,7 @@ namespace Tests
             Assert.NotNull(session);
             Assert.Equal(session.ApiKey, apiKey);
             Assert.Equal(session.ApiSecret, apiSecret);
-            Assert.Equal(session.Mode, MediaMode.ROUTED);
+            Assert.Equal(session.MediaMode, MediaMode.ROUTED);
             Assert.Equal(session.Location, "0.0.0.0");
             Assert.True(ValidateSession(session.Id));
         }
