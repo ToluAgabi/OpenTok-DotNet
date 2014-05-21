@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace OpenTokSDK.Constants
 {
+    /**
+     * For internal use.
+     */
     class OpenTokVersion
     {
         private static string Version = "Opentok-DotNet-SDK/" + typeof(OpenTokVersion).Assembly.GetName().Version + "-development";

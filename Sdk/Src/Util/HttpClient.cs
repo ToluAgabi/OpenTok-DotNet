@@ -14,6 +14,9 @@ using System.Xml;
 
 namespace OpenTokSDK.Util
 {
+    /**
+     * For internal use.
+     */
     public class HttpClient
     {
         private string userAgent;
