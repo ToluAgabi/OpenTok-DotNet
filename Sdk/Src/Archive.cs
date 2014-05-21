@@ -13,7 +13,7 @@ namespace OpenTokSDK
  * Defines values returned by the State property of an Archive object. See the ListArchives()
  * method of the OpenTok class.
  */
-    public enum ArchiveState
+    public enum ArchiveStatus
     {
         /**
          * The archive file is available for download from the OpenTok cloud. You can get the URL of
@@ -106,7 +106,10 @@ namespace OpenTokSDK
         /**
          * The session ID of the OpenTok session associated with this archive.
          */
-        public String SessionId { get; set; }             
+        public String SessionId { get; set; }
+
+
+        public String Reason { get; set; }  
         
         /** 
          * The size of the MP4 file. For archives that have not been generated, this value is set
@@ -117,7 +120,7 @@ namespace OpenTokSDK
         /**
          * The status of the archive, as defined by the ArchiveState enum.
          */
-        public ArchiveState Status { get; set; }
+        public ArchiveStatus Status { get; set; }
 
         /**
          * The download URL of the available MP4 file. This is only set for an archive with the

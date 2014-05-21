@@ -296,7 +296,7 @@ namespace OpenTokSDKTest
             Assert.Equal("", archive.Name);
             Assert.Equal("SESSIONID", archive.SessionId);
             Assert.Equal(8347554, archive.Size);
-            Assert.Equal(ArchiveState.AVAILABLE, archive.Status);
+            Assert.Equal(ArchiveStatus.AVAILABLE, archive.Status);
             Assert.Equal("http://tokbox.com.archive2.s3.amazonaws.com/123456%2F" + archiveId + "%2Farchive.mp4?Expires=13951" +
                     "94362&AWSAccessKeyId=AKIAI6LQCPIXYVWCQV6Q&Signature=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", archive.Url);
 
