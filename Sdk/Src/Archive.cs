@@ -10,7 +10,7 @@ using OpenTokSDK.Util;
 namespace OpenTokSDK
 {
 /**
- * Defines values returned by the State property of an Archive object. See the ListArchives()
+ * Defines values returned by the Status property of an Archive object. See the ListArchives()
  * method of the OpenTok class.
  */
     public enum ArchiveStatus
