@@ -118,14 +118,14 @@ namespace OpenTokSDK
         public int Size { get; set; }              
 
         /**
-         * The status of the archive, as defined by the ArchiveState enum.
+         * The status of the archive, as defined by the ArchiveStatus enum.
          */
         public ArchiveStatus Status { get; set; }
 
         /**
          * The download URL of the available MP4 file. This is only set for an archive with the
-         * status set to ArchiveState.AVAILABLE; for other archives, (including archives with the
-         * status of ArchiveState.UPLOADED) this method returns null. The download URL is
+         * status set to ArchiveStatus.AVAILABLE; for other archives, (including archives with the
+         * status of ArchiveStatus.UPLOADED) this method returns null. The download URL is
          * obfuscated, and the file is only available from the URL for 10 minutes. To generate a
          * new URL, call the ListArchives() or GetArchive() method of the OpenTok object.
          */
