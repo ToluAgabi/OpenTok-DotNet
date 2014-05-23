@@ -1,4 +1,5 @@
 ﻿using OpenTokSDK;
+using OpenTokSDK.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -16,10 +17,23 @@ namespace SimpleSample.Controllers
         public ActionResult Index()
         {
             HttpApplicationState Application = HttpContext.ApplicationInstance.Application;
-            ViewBag.sessionId = Application["sessionId"];
-            ViewBag.token = opentok.GenerateToken(ViewBag.sessionId);
-            ViewBag.apiKey = opentok.ApiKey;
-
+         
+            if (!String.IsNullOrEmpty((string) Application["error"]))
+            {
+                ViewBag.Error = (string) Application["error"];
+            }
+         
+            try
+            {
+                ViewBag.sessionId = Application["sessionId"];
+                ViewBag.token = opentok.GenerateToken(ViewBag.sessionId);
+                ViewBag.apiKey = opentok.ApiKey;
+            }
+            catch(OpenTokException)
+            {
+                ViewBag.Error = "Token for the session could not be generated";
+            }
+            
             return View();
         }
     }

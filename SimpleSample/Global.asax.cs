@@ -1,4 +1,5 @@
 ﻿using OpenTokSDK;
+using OpenTokSDK.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -18,7 +19,14 @@ namespace SimpleSample
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             OpenTok opentok = new OpenTok(Convert.ToInt32(ConfigurationManager.AppSettings["opentok_key"]),
                         ConfigurationManager.AppSettings["opentok_secret"]);
-            Application["sessionId"] = opentok.CreateSession().Id;
+            try
+            {
+                Application["sessionId"] = opentok.CreateSession().Id;
+            }
+            catch(OpenTokException)
+            {
+                Application["error"] = "Error: session could not be generated";
+            }            
         }
     }
 }

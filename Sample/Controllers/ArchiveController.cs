@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.Mvc;
 using OpenTokSDK;
+using OpenTokSDK.Exceptions;
 using System.IO;
 using System.Configuration;
 
@@ -21,21 +22,48 @@ namespace Sample.Controllers
         public string Start()
         {
             HttpApplicationState Application = HttpContext.ApplicationInstance.Application;
-            return opentok.StartArchive((string)Application["sessionId"], "DotNet Archiving Sample").Id.ToString(); 
+            Archive archive;
+ 
+            try
+            {
+                archive = opentok.StartArchive((string)Application["sessionId"], "DotNet Archiving Sample");
+            }
+            catch(OpenTokException)
+            {
+                return "Error: Archive ID could not be created";
+            }
+            return archive.Id.ToString(); 
         }
 
         // POST Archive/Stop
         public string Stop(string id)
         {
-            return opentok.StopArchive(id).Id.ToString(); 
+            Archive archive;
+
+            try
+            {
+                archive = opentok.StopArchive(id);
+            }
+            catch (OpenTokException)
+            {
+                return "Error: Archive ID could not be created";
+            }
+            return archive.Id.ToString(); 
         }
 
         public ActionResult Delete(string id)
         {
             if (id != null)
             {
-                opentok.DeleteArchive(id);                
-            }
+                try
+                {
+                    opentok.DeleteArchive(id);
+                }
+                catch (OpenTokException)
+                {
+                    Redirect("/");
+                }
+                            }
             return Redirect("/Archive/List/");            
         }
 
@@ -53,7 +81,16 @@ namespace Sample.Controllers
                 page = 0;
             }
 
-            ViewBag.Archives = opentok.ListArchives(page*archivesPerPage, archivesPerPage);
+            try
+            {
+                ViewBag.Archives = opentok.ListArchives(page * archivesPerPage, archivesPerPage);
+            }
+            catch(OpenTokException)
+            {
+                ViewBag.Error = "Archive List could not be retrieved";
+                return View();
+            }
+           
             if (page > 0)
             {
                 ViewBag.ShowPrevious = string.Format("/Archive/List/{0}", page - 1);

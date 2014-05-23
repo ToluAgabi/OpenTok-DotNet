@@ -8,6 +8,11 @@
         var apiKey = '@ViewBag.apiKey';
         var sessionId = '@ViewBag.sessionId';
         var token = '@ViewBag.token';
+
+        if (!apiKey || !sessionId || !token) {
+            window.alert('SessionId and token could not be generated for the session.' + 
+                'You\'ll still be able to use video but not to connect participants');
+        }
     </script>
     <script src="/Scripts/helloworld.js"></script>
 </head>

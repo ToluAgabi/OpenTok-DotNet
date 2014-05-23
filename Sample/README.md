@@ -59,15 +59,33 @@ This sample app shows how to use the archiving API in the OpenTok 2.0 .NET SDK.
 The HostView.cshtml file (in the views directory) includes a button for starting the archive.
 When the user clicks this button, the page makes an Ajax call back to the server:
 
-    $(".start").click(function (event) {
-            $.get("/Archive/Start");
-        }).show();
-    
+<pre>
+$(".start").click(function (event) {
+        $.get("/Archive/Start");
+    }).show();
+</pre>    
 
 The Start() method of the Sample.Controllers.ArchiveController controller handles this
 HTTP request:
 
-    string archiveId = opentok.StartArchive((string)Application["sessionId"], "DotNet Archiving Sample").Id.ToString(); 
+<pre>
+public string Start()
+{
+    // ..
+
+    Archive archive;
+
+    try
+    {
+        archive = opentok.StartArchive((string)Application["sessionId"], "DotNet Archiving Sample");
+    }
+    catch(OpenTokException)
+    {
+        return "Error: Archive ID could not be created";
+    }
+    return archive.Id.ToString(); 
+}
+</pre>
 
 The opentok object is a class field and is initialized when the controller is created. The OpenTok class is
 defined in the OpenTok .NET SDK. The Start() method of the OpenTok object starts an archive, and it takes two parameters:
@@ -80,25 +98,44 @@ You can only start recording an archive in a session that has active clients con
 In the page on the web client, the Session object (in JavaScript) dispatches an archiveStarted
 event. The page stores the archive ID (a unique identifier of the archive) in an archiveID variable:
 
+<pre>
     session.on('archiveStarted', function(event) {
       archiveID = event.id;
       console.log("ARCHIVE STARTED");
       $(".start").hide();
       $(".stop").show();
     });
+</pre>
 
 ### Stopping an archive
 
 The HostView.cshtml file includes a button for stopping the archive. When the user clicks this
 button, the page makes an Ajax call back to the server:
 
+<pre>
     $(".stop").click(function (event) {
         $.get("/Archive/Stop/" + archiveID);
     }).hide();
+</pre>
 
 The Stop() method of the ArchiveController controller handles this HTTP request:
 
-    opentok.StopArchive(id).Id.ToString(); 
+<pre>
+public string Stop(string id)
+{
+    Archive archive;
+
+    try
+    {
+        archive = opentok.StopArchive(id);
+    }
+    catch (OpenTokException)
+    {
+        return "Error: Archive ID could not be created";
+    }
+    return archive.Id.ToString(); 
+}
+</pre>
 
 This code calls the Stop() method of the OpenTok object. This method stops an archive,
 based on the archive ID.
@@ -106,17 +143,20 @@ based on the archive ID.
 In the page on the web client, the Session object (in JavaScript) dispatches an archiveStopped
 event. The page stores the archive ID (a unique identifier of the archive) in an archiveID variable:
 
+<pre>
     session.on('archiveStopped', function(event) {
       archiveID = null;
       console.log("ARCHIVE STOPPED");
       $(".start").show();
       $(".stop").hide();
     });
+</pre>
 
 ### Listing archives
 
 The List() method of the ArchiveController controller handles this HTTP request:
 
+<pre>
 private const int archivesPerPage = 5;
 
 public ActionResult List(string id)
@@ -124,11 +164,20 @@ public ActionResult List(string id)
     int page = 0;
     //.. read page from id
 
-    ViewBag.Archives = opentok.ListArchives(page*archivesPerPage, archivesPerPage);
-    
+    try
+    {
+        ViewBag.Archives = opentok.ListArchives(page * archivesPerPage, archivesPerPage);
+    }
+    catch(OpenTokException)
+    {
+        ViewBag.Error = "Archive List could not be retrieved";
+        return View();
+    }
+
     // ...
     return View();
 }
+</pre>
 
 This code calls the ListArchives() method or the ListArchives(int offset, int count) method
 of the OpenTok object. These methods list archives created for the API key. 
@@ -159,6 +208,7 @@ An Archive object represents an OpenTok archive, and includes the following prop
 The client web page iterates through the JSON data, representing the list of archive objects,
 and it displays the id, name, createdAt, duration, status, and url properties of the object:
 
+<pre>
     function displayArchives(data) {
       // clear out the table first
       $("table > tbody").html("");
@@ -187,6 +237,7 @@ and it displays the id, name, createdAt, duration, status, and url properties of
         $("table > tbody").append(tr);
       }
     }
+</pre>
 
 ### Downloading archives
 
@@ -198,6 +249,7 @@ previous section, which shows how this URL is added to the List.cshtml.
 The List.cshtml file includes buttons for deleting archives. When the user clicks one of
 these buttons, the page makes an Ajax call back to the server:
 
+<pre>
     <form method="post" action="/Archive/Delete/@item.Id">
         @if (item.Status.ToString() == "AVAILABLE") 
         { 
@@ -208,13 +260,27 @@ these buttons, the page makes an Ajax call back to the server:
             <td>&nbsp; </td>
         }                                           
     </form>
+</pre>
 
 The Delete() method of the ArchiveController controller handles this HTTP request:
 
+<pre>
+public ActionResult Delete(string id)
+{
     if (id != null)
     {
-        opentok.DeleteArchive(id);                
-    }
+        try
+        {
+            opentok.DeleteArchive(id);
+        }
+        catch (OpenTokException)
+        {
+            Redirect("/");
+        }
+                    }
+    return Redirect("/Archive/List/");            
+}
+</pre>
 
 This code calls the DeleteArchive() method of the OpenTok object. This method deletes an archive,
 based on the archive ID.

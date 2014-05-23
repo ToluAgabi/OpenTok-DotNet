@@ -22,22 +22,23 @@ Use the `CreateSession()` method of the OpenTok object to create a session and a
 The following code creates a session that uses the OpenTok Media Router:
 
 <pre>
-using OpenTokSDK;
-
-namespace ConsoleApplication
+namespace Example
 {
     class Program
     {
         static void Main(string[] args)
         {
-	        int apiKey = 0; // Replace with your OpenTok API key.
-	        string apiSecret = ""; // Replace with your OpenTok API secret.
+            int apiKey = 0; // Replace with your OpenTok API key.
+            string apiSecret = ""; // Replace with your OpenTok API secret.
 
-	        OpenTok opentok = new OpenTok(apiKey, apiSecret);
-	        Session session = opentok.CreateSession();
-	        
-	        //Generate a session that uses the OpenTok Media Router    
-	        Console.Out.WriteLine("SessionId: %s", session.Id);
+            // Creating opentok object to access the opentok API
+            OpenTok opentok = new OpenTok(apiKey, apiSecret);
+
+            // Create a session that uses the OpenTok Media Router    
+            Session session = opentok.CreateSession();
+           
+            // The ID of the session we just created
+            Console.Out.WriteLine("SessionId: {0}", session.Id);
         }
     }
 }
@@ -46,22 +47,23 @@ namespace ConsoleApplication
 The following code creates a peer-to-peer session:
 
 <pre>
-using OpenTokSDK;
-
-namespace ConsoleApplication
+namespace Example
 {
     class Program
     {
         static void Main(string[] args)
         {
-	        int apiKey = 0; // Replace with your OpenTok API key.
-	        string apiSecret = ""; // Replace with your OpenTok API secret.
+            int apiKey = 0; // Replace with your OpenTok API key.
+            string apiSecret = ""; // Replace with your OpenTok API secret.
 
-	        OpenTok opentok = new OpenTok(apiKey, apiSecret);
-	        Session session = opentok.CreateSession(mediaMode = MediaMode.RELAY);
-	        
-	        //Generate a session that uses the OpenTok Media Router    
-	        Console.Out.WriteLine("SessionId: %s", session.Id);
+            // Creating opentok object to access the opentok API
+            OpenTok opentok = new OpenTok(apiKey, apiSecret);
+
+            // Create a session that uses the OpenTok Media Router    
+            Session session = opentok.CreateSession(mediaMode: MediaMode.RELAY);
+           
+            // The ID of the session we just created
+            Console.Out.WriteLine("SessionId: {0}", session.Id);
         }
     }
 }
@@ -75,22 +77,26 @@ The following example shows how to obtain a token:
 <pre>
 using OpenTokSDK;
 
-namespace ConsoleApplication
+namespace Example
 {
     class Program
     {
         static void Main(string[] args)
         {
-	        int apiKey = 0; // Replace with your OpenTok API key.
-	        string apiSecret = ""; // Replace with your OpenTok API secret.
+            int apiKey = 0; // Replace with your OpenTok API key.
+            string apiSecret = ""; // Replace with your OpenTok API secret.
 
-	        OpenTok opentok = new OpenTok(apiKey, apiSecret);
-	         //Generate a basic session. Or you could use an existing session ID.
-	        Session session = opentok.CreateSession(mediaMode = MediaMode.RELAY);
+            // Creating opentok object to access the opentok API
+            OpenTok opentok = new OpenTok(apiKey, apiSecret);
 
-	        string token = opentok.GenerateToken(session.Id)
+            // Create a session that uses the OpenTok Media Router    
+            Session session = opentok.CreateSession();
+           
+            // Generate a token from the session we just created            
+            string token = opentok.GenerateToken(session.Id);
 
-	        Console.Out.WriteLine("SessionId: %s \ntoken: %s", session.Id, token);
+            // We finally print out the id of the session with the new token created
+            Console.Out.WriteLine("SessionId: {0} \ntoken: {1}", session.Id, token);
         }
     }
 }
@@ -102,23 +108,27 @@ a connection metadata string:
 <pre>
 using OpenTokSDK;
 
-namespace ConsoleApplication
+namespace Example
 {
     class Program
     {
         static void Main(string[] args)
         {
-	        int apiKey = 0; // Replace with your OpenTok API key.
-	        string apiSecret = ""; // Replace with your OpenTok API secret.
+            int apiKey = 0; // Replace with your OpenTok API key.
+            string apiSecret = ""; // Replace with your OpenTok API secret.
+            string connectionData = "username=Bob,userLevel=4";
 
-	        OpenTok opentok = new OpenTok(apiKey, apiSecret);
-	        Session session = opentok.CreateSession(mediaMode = MediaMode.RELAY);
-	        string connectionData = "username=Bob,userLevel=4";
+            // Creating opentok object to access the opentok API
+            OpenTok opentok = new OpenTok(apiKey, apiSecret);
 
-	        string token = opentok.Generate(session.Id, role=Role.SUBSCRIBER, data=connectionData);
+            // Create a session that uses the OpenTok Media Router    
+            Session session = opentok.CreateSession();
+           
+            // Generate a token from the session we just created            
+            string token = opentok.GenerateToken(session.Id, role: Role.SUBSCRIBER, data: connectionData);
 
-	        //Generate a session that uses the OpenTok Media Router    
-	        Console.Out.WriteLine("SessionId: %s \ntoken: %s", session.Id, token);
+            // We finally print out the id of the session with the new token created
+            Console.Out.WriteLine("SessionId: {0} \ntoken: {1}", session.Id, token);
         }
     }
 }
@@ -130,12 +140,16 @@ The following method starts recording an archive of an OpenTok 2.0 session (give
 and returns the archive ID (on success).
 
 <pre>
-Guid StartArchive(OpenTok opentok, string sessionId, string name) {
-    try {
-        Archive archive = opentok.startArchive(sessionId, name);
+Guid StartArchive(OpenTok opentok, string sessionId, string name)
+{
+    try
+    {
+        Archive archive = opentok.StartArchive(sessionId, name);
         return archive.Id;
-    } catch (OpenTokException exception){
-        return null;
+    }
+    catch (OpenTokException)
+    {
+        return Guid.Empty;
     }
 }
 </pre>
@@ -144,11 +158,15 @@ The following method stops the recording of an archive (given an archive ID), re
 true on success, and false on failure.
 
 <pre>
-bool stopArchive(OpenTok opentok, string archiveId) {
-    try {
+bool StopArchive(OpenTok opentok, string archiveId)
+{
+    try
+    {
         Archive archive = opentok.StopArchive(archiveId);
         return true;
-    } catch (OpenTokException exception){
+    }
+    catch (OpenTokException)
+    {
         return false;
     }
 }
@@ -157,11 +175,15 @@ bool stopArchive(OpenTok opentok, string archiveId) {
 The following method logs information on a given archive.
 
 <pre>
-void LogArchiveInfo(OpenTok opentok, string archiveId) {
-    try {
+void LogArchiveInfo(OpenTok opentok, string archiveId)
+{
+    try
+    {
         Archive archive = opentok.GetArchive(archiveId);
-        Console.Out.WriteLine(archive.ToString());
-    } catch (OpenTokException exception){
+        Console.Out.WriteLine("ArchiveId: {0}", archive.Id.ToString());
+    }
+    catch (OpenTokException exception)
+    {
         Console.Out.WriteLine(exception.ToString());
     }
 }
@@ -171,14 +193,18 @@ The following method logs information on all archives (up to 50)
 for your API key:
 
 <pre>
-void ListArchives(OpenTok opentok) {
-    try {
-    	ArchiveList archives = opentok.ListArchives();
-        for (int i = 0; i &lt; archives.Count(); i++) {
-            Archive archive = archives.get(i);
-            Console.Out.WriteLine(archive.ToString());
+void ListArchives(OpenTok opentok) 
+{
+    try 
+    {
+        ArchiveList archives = opentok.ListArchives();
+        for (int i = 0; i &lt; archives.Count(); i++) 
+        {
+            Archive archive = archives.ElementAt(i);
+            Console.Out.WriteLine("ArchiveId: {0}", archive.Id.ToString());
         }
-    } catch (OpenTokException exception) {
+    } catch (OpenTokException exception) 
+    {
         Console.Out.WriteLine(exception.ToString());
     }
 }

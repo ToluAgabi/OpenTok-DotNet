@@ -36,7 +36,6 @@ This sample app is for use with the OpenTok 2.0 .NET SDK.
    publishes a new stream to the session. You'll see the two streams published in the session in the two windows of the browser. 
 
 ## Understanding the code
-
 This sample app shows how to use the basic API in the OpenTok 2.0 .NET SDK.
 
 ## Documentation

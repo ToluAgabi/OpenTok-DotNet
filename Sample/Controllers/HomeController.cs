@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.UI;
 using OpenTokSDK;
+using OpenTokSDK.Exceptions;
 using System.Configuration;
 
 namespace Sample.Controllers
@@ -35,21 +36,30 @@ namespace Sample.Controllers
 
         private ActionResult OpenTokView()
         {
-            string sessionId = GetSessionId(HttpContext.ApplicationInstance.Application);
-            ViewBag.apikey = opentok.ApiKey;
-            ViewBag.sessionId = sessionId;
-            ViewBag.token = opentok.GenerateToken(sessionId);
+            try
+            {  
+                string sessionId = GetSessionId(HttpContext.ApplicationInstance.Application);
+                ViewBag.apikey = opentok.ApiKey;
+                ViewBag.sessionId = sessionId;
+                ViewBag.token = opentok.GenerateToken(sessionId);            
+            }
+            catch (OpenTokException)
+            {
+                ViewBag.errorMessage = "Could not generate token";
+            }
             return View();
         }
         private string GetSessionId(HttpApplicationState Application)
         {
-            if (Application["sessionId"] == null)
-            {
-                Application.Lock();
-                Application["sessionId"] = opentok.CreateSession().Id;
-                Application.UnLock();
-            }
-            return (string)Application["sessionId"];
+                      
+                if (Application["sessionId"] == null)
+                {
+                    Application.Lock();
+                    Application["sessionId"] = opentok.CreateSession().Id;
+                    Application.UnLock();
+                }
+                return (string)Application["sessionId"];
+            
         }
     }
 }
