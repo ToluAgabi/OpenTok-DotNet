@@ -99,12 +99,12 @@ In the page on the web client, the Session object (in JavaScript) dispatches an 
 event. The page stores the archive ID (a unique identifier of the archive) in an archiveID variable:
 
 <pre>
-    session.on('archiveStarted', function(event) {
-      archiveID = event.id;
-      console.log("ARCHIVE STARTED");
-      $(".start").hide();
-      $(".stop").show();
-    });
+session.on('archiveStarted', function(event) {
+  archiveID = event.id;
+  console.log("ARCHIVE STARTED");
+  $(".start").hide();
+  $(".stop").show();
+});
 </pre>
 
 ### Stopping an archive
@@ -113,9 +113,9 @@ The HostView.cshtml file includes a button for stopping the archive. When the us
 button, the page makes an Ajax call back to the server:
 
 <pre>
-    $(".stop").click(function (event) {
-        $.get("/Archive/Stop/" + archiveID);
-    }).hide();
+$(".stop").click(function (event) {
+    $.get("/Archive/Stop/" + archiveID);
+}).hide();
 </pre>
 
 The Stop() method of the ArchiveController controller handles this HTTP request:
@@ -144,12 +144,12 @@ In the page on the web client, the Session object (in JavaScript) dispatches an 
 event. The page stores the archive ID (a unique identifier of the archive) in an archiveID variable:
 
 <pre>
-    session.on('archiveStopped', function(event) {
-      archiveID = null;
-      console.log("ARCHIVE STOPPED");
-      $(".start").show();
-      $(".stop").hide();
-    });
+session.on('archiveStopped', function(event) {
+  archiveID = null;
+  console.log("ARCHIVE STOPPED");
+  $(".start").show();
+  $(".stop").hide();
+});
 </pre>
 
 ### Listing archives
@@ -249,18 +249,16 @@ previous section, which shows how this URL is added to the List.cshtml.
 The List.cshtml file includes buttons for deleting archives. When the user clicks one of
 these buttons, the page makes an Ajax call back to the server:
 
-<pre>
-    <form method="post" action="/Archive/Delete/@item.Id">
-        @if (item.Status.ToString() == "AVAILABLE") 
-        { 
-            <td><input class="btn btn-danger btn-xs" type="submit" value="Delete"> </td>
-        }
-        else
-        {
-            <td>&nbsp; </td>
-        }                                           
-    </form>
-</pre>
+  <form method="post" action="/Archive/Delete/@item.Id">
+      @if (item.Status.ToString() == "AVAILABLE") 
+      { 
+          <td><input class="btn btn-danger btn-xs" type="submit" value="Delete"> </td>
+      }
+      else
+      {
+          <td>&nbsp; </td>
+      }                                           
+  </form>
 
 The Delete() method of the ArchiveController controller handles this HTTP request:
 
@@ -287,8 +285,8 @@ based on the archive ID.
 
 ## Documentation
 
-* [OpenTok OpenTok .NET SDK documentation](../../README.md)
-* [Archiving JavaScript API documentation](../../../JavaScript-API.md)
+* [OpenTok OpenTok .NET SDK documentation](../README.md)
+* [Archiving JavaScript API documentation](../JavaScript-API.md)
 
 ## More information
 

@@ -11,6 +11,26 @@ Download the .NET SDK:
 
 <https://github.com/opentok/Opentok-DotNet/archive/master.zip>
 
+## Prerequisites
+
+1. Visual Studio. The OpenTok archiving API does not require Visual Studio. However, this sample was
+   developed using Visual Studio to create a solution with the different projects.
+
+2. An OpenTok API key and secret (see <https://dashboard.tokbox.com>)
+
+# Setup 
+
+1. Open Visual Studio, "File -> Open -> Project/Solution" and open the Opentok-DotNet-SDK.sln file in this directory. 
+
+2. Visual Studio will load the four projects that are part of this solution. 
+    * Sdk contains the actual OpenTok .NET SDK
+    * SimpleSample contains a very sample app to show the most basic functionality the OpenTok platform offers
+    * Sample contains a sample app showing off the new archiving features of the OpenTok platform added for version 2.2.
+
+3. In order to run one of the apps, see the respectives README.md files in their corresponding directory.    
+    * [SimpleSample documentation](SimpleSample/README.md)
+    * [ArchivingSample documentation](Sample/README.md)
+
 # Documentation
 
 Reference documentation is available at <http://www.tokbox.com//opentok/libraries/server/dot-net/reference/index.html> and in the
