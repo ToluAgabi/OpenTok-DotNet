@@ -17,11 +17,9 @@ namespace Sample.Controllers
         private OpenTok opentok = new OpenTok(Convert.ToInt32(ConfigurationManager.AppSettings["opentok_key"]),
                                     ConfigurationManager.AppSettings["opentok_secret"]);
 
-
         // POST Archive/Start
         public string Start()
         {
-            
             HttpApplicationState Application = HttpContext.ApplicationInstance.Application;
             return opentok.StartArchive((string)Application["sessionId"], "DotNet Archiving Sample").Id.ToString(); 
         }
@@ -46,7 +44,6 @@ namespace Sample.Controllers
         {
             int page = 0;
 
-            //GGB 
             try
             {
                 page = Int32.Parse(id);                
@@ -56,7 +53,6 @@ namespace Sample.Controllers
                 page = 0;
             }
 
-            
             ViewBag.Archives = opentok.ListArchives(page*archivesPerPage, archivesPerPage);
             if (page > 0)
             {

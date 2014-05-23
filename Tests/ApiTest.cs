@@ -24,6 +24,7 @@ namespace Tests
         {
             OpenTok opentok = new OpenTok(apiKey, apiSecret);
             Session session = opentok.CreateSession();
+            Console.Out.WriteLine("SessionId: %s", session.Id);
 
             Assert.NotNull(session);
             Assert.Equal(session.ApiKey, apiKey);
