@@ -2,14 +2,11 @@ OpenTok 2.0 Archiving .NET Sample App
 ========================================
 
 A sample app showing use of the OpenTok 2.0 Archiving API.
-
 This sample app is for use with the OpenTok 2.0 .NET SDK. 
 
 ## Prerequisites
 
-1. Visual Studio.
-
-   The OpenTok archiving API does not require Visual Studio. However, this sample was
+1. Visual Studio. The OpenTok archiving API does not require Visual Studio. However, this sample was
    developed using Visual Studio to create a solution with the different projects.
 
 2. An OpenTok API key and secret (see <https://dashboard.tokbox.com>)
@@ -59,7 +56,7 @@ This sample app shows how to use the archiving API in the OpenTok 2.0 .NET SDK.
 
 ### Starting an archive
 
-The HostView.html file (in the views directory) includes a button for starting the archive.
+The HostView.cshtml file (in the views directory) includes a button for starting the archive.
 When the user clicks this button, the page makes an Ajax call back to the server:
 
     $(".start").click(function (event) {
@@ -92,7 +89,7 @@ event. The page stores the archive ID (a unique identifier of the archive) in an
 
 ### Stopping an archive
 
-The HostView.html file includes a button for stopping the archive. When the user clicks this
+The HostView.cshtml file includes a button for stopping the archive. When the user clicks this
 button, the page makes an Ajax call back to the server:
 
     $(".stop").click(function (event) {

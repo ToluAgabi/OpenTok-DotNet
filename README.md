@@ -17,7 +17,7 @@ Reference documentation is available at <http://www.tokbox.com//opentok/librarie
 docs directory of the SDK.
 
 # Creating Sessions
-Use the `createSession()` method of the OpenTok object to create a session and a session ID.
+Use the `CreateSession()` method of the OpenTok object to create a session and a session ID.
 
 The following code creates a session that uses the OpenTok Media Router:
 
@@ -68,7 +68,7 @@ namespace ConsoleApplication
 </pre>
 
 # Generating tokens
-Use the  `generateTokentoken()` method of the OpenTokSDK object to create an OpenTok token:
+Use the  `GenerateToken()` method of the OpenTokSDK object to create an OpenTok token:
 
 The following example shows how to obtain a token:
 

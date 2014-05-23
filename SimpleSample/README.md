@@ -7,9 +7,7 @@ This sample app is for use with the OpenTok 2.0 .NET SDK.
 
 ## Prerequisites
 
-1. Visual Studio.
-
-   The OpenTok archiving API does not require Visual Studio. However, this sample was
+1. Visual Studio. The OpenTok archiving API does not require Visual Studio. However, this sample was
    developed using Visual Studio to create a solution with the different projects.
 
 2. An OpenTok API key and secret (see <https://dashboard.tokbox.com>)
@@ -39,7 +37,7 @@ This sample app is for use with the OpenTok 2.0 .NET SDK.
 
 ## Understanding the code
 
-This sample app shows how to use the basic API in the OpenTok 2.0 .NET SDK. 
+This sample app shows how to use the basic API in the OpenTok 2.0 .NET SDK.
 
 ## Documentation
 
